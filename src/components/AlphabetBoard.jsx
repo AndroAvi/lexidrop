@@ -74,7 +74,7 @@ const blankSpaces = Array(blankSpacesNeeded).fill().map((_, index) => ({
 // Combine vowels, blank spaces, and consonants
 const kannadaAlphabet = [...vowels, ...blankSpaces, ...consonants];
 
-const AlphabetBoard = () => {
+const AlphabetBoard = ({ onStartPractice }) => {
   // Track letters that have been correctly placed in their slots
   const [placedLetters, setPlacedLetters] = useState(new Set());
   const [showSuccess, setShowSuccess] = useState(false);
@@ -88,6 +88,7 @@ const AlphabetBoard = () => {
       setShowSuccess(true);
     }
   }, [progress]);
+
   // Create a randomized array of draggable Kannada letters
   const [randomizedLetters] = useState(() => {
     const letters = kannadaAlphabet.map((letter, index) => ({
@@ -103,6 +104,7 @@ const AlphabetBoard = () => {
 
     return letters;
   });
+
   const COLS = 8;
   // Calculate required rows based on total letters
   const ROWS = Math.ceil(kannadaAlphabet.length / COLS);
@@ -127,133 +129,140 @@ const AlphabetBoard = () => {
         </p>
 
         <DndProvider backend={HTML5Backend}>
-          <div className="bg-[#F4C7C7] rounded-xl p-8 shadow-lg w-fit mx-auto">
-            <h3 className="text-xl font-bold text-[#E34234] mb-6 text-center">English Transliterations</h3>
-            <div className="flex flex-col items-center justify-center">
-              {/* Column Headers */}
-              {/* <div className="flex pl-8 mb-4">
-                <div className="w-8 h-8" />
-                <div className="grid grid-cols-8 gap-4 w-[640px]">
-                  {Array(COLS).fill().map((_, i) => (
-                    <div key={`col-${i}`} className="flex justify-center">
-                      <span className="text-sm font-semibold text-[#E34234]">{i + 1}</span>
-                    </div>
-                  ))}
+          {/* Main content area with side-by-side layout */}
+          <div className="flex flex-row justify-center gap-8 w-full px-4">
+            {/* Left side: Draggable Kannada Letters */}
+            <div className="bg-[#F4C7C7] rounded-xl p-8 shadow-lg w-1/2 max-w-xl">
+              <h3 className="text-xl font-bold text-[#E34234] mb-6 text-center">Kannada Letters</h3>
+              <div className="w-full">
+                {/* Vowels Section */}
+                <div className="text-sm font-medium text-[#E34234]/80 mb-2 text-left">Vowels (ಸ್ವರಗಳು)</div>
+                <div className="grid grid-cols-5 gap-4 mb-6">
+                  {randomizedLetters
+                    .filter(letter => vowels.some(v => v.kannada === letter.letter))
+                    .map((letter) => {
+                      const isPlaced = placedLetters.has(letter.letter);
+                      return !isPlaced ? (
+                        <DraggableLetter
+                          key={letter.id}
+                          letter={letter.letter}
+                          id={letter.id}
+                        />
+                      ) : (
+                        <div key={letter.id} className="h-14 w-14" />
+                      );
+                    })}
                 </div>
-              </div> */}
 
-              {/* Matrix with Row Numbers */}
-              <div className="flex">
-                {/* Row Headers */}
-                {/* <div className="w-8 flex flex-col gap-4 mr-4">
-                  {Array(ROWS).fill().map((_, i) => (
-                    <div key={`row-${i}`} className="h-14 flex items-center justify-center">
-                      <span className="text-sm font-semibold text-[#E34234]">{String.fromCharCode(65 + i)}</span>
-                    </div>
-                  ))}
-                </div> */}
+                {/* Separator Line */}
+                <div className="border-b-2 border-[#E34234]/20 my-6"></div>
 
-                {/* Matrix */}
-                <div className="w-[640px]">
-                  {/* Section Label for Vowels */}
-                  <div className="text-sm font-medium text-[#E34234]/80 mb-2 text-left">Vowels (ಸ್ವರಗಳು)</div>
-                  <div className="grid grid-cols-8 gap-4">
-                    {/* Vowels Section */}
-                    {cells.slice(0, vowels.length).map((cell, index) => {
-                      const kannadaLetter = index < vowels.length ? vowels[index].kannada : null;
-                      return (
-                        <DropZone
-                          key={index}
-                          expectedKannada={kannadaLetter}
-                          englishTransliteration={cell}
-                          onDrop={(item) => {
-                            if (item.letter === kannadaLetter) {
-                              setPlacedLetters(prev => new Set([...prev, item.letter]));
-                            }
-                          }}
+                {/* Consonants Section */}
+                <div className="text-sm font-medium text-[#E34234]/80 mb-2 text-left">Consonants (ವ್ಯಂಜನಗಳು)</div>
+                <div className="grid grid-cols-5 gap-4">
+                  {randomizedLetters
+                    .filter(letter => consonants.some(c => c.kannada === letter.letter))
+                    .map((letter) => {
+                      const isPlaced = placedLetters.has(letter.letter);
+                      return !isPlaced ? (
+                        <DraggableLetter
+                          key={letter.id}
+                          letter={letter.letter}
+                          id={letter.id}
                         />
+                      ) : (
+                        <div key={letter.id} className="h-14 w-14" />
                       );
                     })}
-                  </div>
-
-                  {/* Separator Line */}
-                  <div className="border-b-2 border-[#E34234]/20 my-6"></div>
-
-                  {/* Section Label for Consonants */}
-                  <div className="text-sm font-medium text-[#E34234]/80 mb-2 text-left">Consonants (ವ್ಯಂಜನಗಳು)</div>
-                  <div className="grid grid-cols-8 gap-4">
-                    {/* Consonants Section */}
-                    {cells.slice(vowels.length + blankSpacesNeeded).map((cell, index) => {
-                      const consonantIndex = index + vowels.length + blankSpacesNeeded;
-                      const kannadaLetter = consonantIndex < kannadaAlphabet.length ? kannadaAlphabet[consonantIndex].kannada : null;
-                      return (
-                        <DropZone
-                          key={consonantIndex}
-                          expectedKannada={kannadaLetter}
-                          englishTransliteration={cell}
-                          onDrop={(item) => {
-                            if (item.letter === kannadaLetter) {
-                              setPlacedLetters(prev => new Set([...prev, item.letter]));
-                            }
-                          }}
-                        />
-                      );
-                    })}
-                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Draggable Kannada Letters Section */}
-          <div className="mt-12 bg-[#F4C7C7] rounded-xl p-8 shadow-lg w-fit mx-auto">
-            <h3 className="text-xl font-bold text-[#E34234] mb-6 text-center">Kannada Letters</h3>
-            <div className="w-[640px]">
-              {/* Vowels Section */}
-              <div className="text-sm font-medium text-[#E34234]/80 mb-2 text-left">Vowels (ಸ್ವರಗಳು)</div>
-              <div className="grid grid-cols-8 gap-4 mb-6">
-                {randomizedLetters
-                  .filter(letter => vowels.some(v => v.kannada === letter.letter))
-                  .map((letter) => {
-                    const isPlaced = placedLetters.has(letter.letter);
-                    return !isPlaced ? (
-                      <DraggableLetter
-                        key={letter.id}
-                        letter={letter.letter}
-                        id={letter.id}
+            {/* Right side: Drop Zones */}
+            <div className="bg-[#F4C7C7] rounded-xl p-8 shadow-lg w-1/2 max-w-xl">
+              <h3 className="text-xl font-bold text-[#E34234] mb-6 text-center">English Transliterations</h3>
+              <div className="w-full">
+                {/* Section Label for Vowels */}
+                <div className="text-sm font-medium text-[#E34234]/80 mb-2 text-left">Vowels (ಸ್ವರಗಳು)</div>
+                <div className="grid grid-cols-5 gap-4">
+                  {/* Vowels Section */}
+                  {cells.slice(0, vowels.length).map((cell, index) => {
+                    const kannadaLetter = index < vowels.length ? vowels[index].kannada : null;
+                    return (
+                      <DropZone
+                        key={index}
+                        expectedKannada={kannadaLetter}
+                        englishTransliteration={cell}
+                        onDrop={(item) => {
+                          if (item.letter === kannadaLetter) {
+                            setPlacedLetters(prev => new Set([...prev, item.letter]));
+                          }
+                        }}
                       />
-                    ) : (
-                      <div key={letter.id} className="h-14 w-14" />
                     );
                   })}
-              </div>
+                </div>
 
-              {/* Separator Line */}
-              <div className="border-b-2 border-[#E34234]/20 my-6"></div>
+                {/* Separator Line */}
+                <div className="border-b-2 border-[#E34234]/20 my-6"></div>
 
-              {/* Consonants Section */}
-              <div className="text-sm font-medium text-[#E34234]/80 mb-2 text-left">Consonants (ವ್ಯಂಜನಗಳು)</div>
-              <div className="grid grid-cols-8 gap-4">
-                {randomizedLetters
-                  .filter(letter => consonants.some(c => c.kannada === letter.letter))
-                  .map((letter) => {
-                    const isPlaced = placedLetters.has(letter.letter);
-                    return !isPlaced ? (
-                      <DraggableLetter
-                        key={letter.id}
-                        letter={letter.letter}
-                        id={letter.id}
+                {/* Section Label for Consonants */}
+                <div className="text-sm font-medium text-[#E34234]/80 mb-2 text-left">Consonants (ವ್ಯಂಜನಗಳು)</div>
+                <div className="grid grid-cols-5 gap-4">
+                  {/* Consonants Section */}
+                  {cells.slice(vowels.length + blankSpacesNeeded).map((cell, index) => {
+                    const consonantIndex = index + vowels.length + blankSpacesNeeded;
+                    const kannadaLetter = consonantIndex < kannadaAlphabet.length ? kannadaAlphabet[consonantIndex].kannada : null;
+                    return (
+                      <DropZone
+                        key={consonantIndex}
+                        expectedKannada={kannadaLetter}
+                        englishTransliteration={cell}
+                        onDrop={(item) => {
+                          if (item.letter === kannadaLetter) {
+                            setPlacedLetters(prev => new Set([...prev, item.letter]));
+                          }
+                        }}
                       />
-                    ) : (
-                      <div key={letter.id} className="h-14 w-14" />
                     );
                   })}
+                </div>
               </div>
             </div>
           </div>
         </DndProvider>
 
-
+        <div className="mt-8 text-center space-y-4 w-full max-w-4xl">
+          {/* Progress Bar */}
+          <div className="w-full mx-auto bg-[#F4C7C7] rounded-full h-4 overflow-hidden">
+            <div
+              className={`h-full transition-all duration-500 ease-out rounded-full
+                ${progress === 100 ? 'bg-[#E34234] animate-[pulse_2s_ease-in-out_infinite]' : 'bg-[#E34234]'}`}
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+          <div className="text-[#F4C7C7] font-medium">
+            {progress === 100 ? (
+              <span className="text-[#F4C7C7] font-bold animate-[bounce_1s_ease-in-out_infinite]">
+                All letters placed correctly! Great job! 🎉
+              </span>
+            ) : (
+              <span>
+                {placedCount} of {totalLetters} letters placed correctly
+              </span>
+            )}
+          </div>
+          <button
+            onClick={() => progress === 100 && onStartPractice()}
+            className={`px-8 py-3 rounded-full text-lg font-semibold transform transition-all duration-300
+                     shadow-lg hover:shadow-xl ${progress === 100
+                       ? 'bg-[#E34234] text-[#F4C7C7] hover:bg-[#c93a2e] hover:scale-105'
+                       : 'bg-[#F4C7C7] text-[#E34234] hover:bg-[#f0baba] hover:scale-105 opacity-50 cursor-not-allowed'}`}
+            disabled={progress !== 100}
+          >
+            Start Writing Practice →
+          </button>
+        </div>
       </div>
     </div>
   );
