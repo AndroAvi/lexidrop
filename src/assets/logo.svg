@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer circle with slow rotation -->
+  <circle cx="20" cy="20" r="18" stroke="#E34234" stroke-width="2.5" opacity="0.9">
+    <animateTransform
+      attributeName="transform"
+      attributeType="XML"
+      type="rotate"
+      from="0 20 20"
+      to="360 20 20"
+      dur="20s"
+      repeatCount="indefinite"
+    />
+  </circle>
+  
+  <!-- Stylized ಕ (ka) letter in the center -->
+  <g>
+    <!-- Vertical stem with gradient -->
+    <defs>
+      <linearGradient id="logoGradient" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#F4C7C7"/>
+        <stop offset="100%" stop-color="#E34234"/>
+      </linearGradient>
+    </defs>
+    <path d="M20 10 C25 10, 25 30, 20 30 C15 30, 15 10, 20 10" fill="url(#logoGradient)">
+      <animate
+        attributeName="opacity"
+        values="0.9;0.7;0.9"
+        dur="2s"
+        repeatCount="indefinite"
+      />
+    </path>
+    <!-- Left curve -->
+    <path d="M15 15 Q20 20 15 25" stroke="#F4C7C7" stroke-width="2" stroke-linecap="round">
+      <animate
+        attributeName="stroke-opacity"
+        values="0.9;0.7;0.9"
+        dur="2s"
+        repeatCount="indefinite"
+      />
+    </path>
+    <!-- Right curve -->
+    <path d="M25 15 Q20 20 25 25" stroke="#F4C7C7" stroke-width="2" stroke-linecap="round">
+      <animate
+        attributeName="stroke-opacity"
+        values="0.9;0.7;0.9"
+        dur="2s"
+        repeatCount="indefinite"
+      />
+    </path>
+  </g>
+</svg>

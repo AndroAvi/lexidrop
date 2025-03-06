@@ -6,6 +6,7 @@ import DraggableLetter from "./components/DraggableLetter";
 import DropZone from "./components/DropZone";
 import TitlePage from "./components/TitlePage";
 import AlphabetBoard from "./components/AlphabetBoard";
+import logo from "./assets/logo.svg";
 
 const kannadaLetters = [
     { id: 1, letter: "ಅ", correctSlot: 0 },
@@ -20,11 +21,20 @@ const NavHeader = () => {
   const location = useLocation();
 
   return (
-    <header className="fixed top-0 left-0 right-0 bg-[#DB5375]/95 backdrop-blur shadow-sm z-50">
+    <header className="fixed top-0 left-0 right-0 bg-[#DB5375]/85 backdrop-blur-md transition-all duration-300 z-50">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           <div className="flex-shrink-0 cursor-pointer" onClick={() => navigate('/')}>
-            <h1 className="text-xl font-bold text-[#F4C7C7]">DrLingua Kannada</h1>
+            <div className="flex items-center space-x-3 group transition-all duration-300 ease-in-out">
+              <div className="relative">
+                <img src={logo} alt="DrLingua Logo" className="w-8 h-8 transition-all duration-700 ease-in-out transform group-hover:scale-110 group-hover:rotate-[360deg]" />
+                <div className="absolute inset-0 bg-[#F4C7C7]/5 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out blur-sm group-hover:blur-md"></div>
+              </div>
+              <div className="flex flex-col transition-all duration-300 ease-in-out transform group-hover:translate-x-0.5">
+                <span className="text-xl font-bold text-[#F4C7C7] tracking-wider transition-all duration-300 ease-in-out group-hover:text-[#F4C7C7]">DrLingua</span>
+                <span className="text-xs text-[#F4C7C7]/70 font-medium -mt-1 tracking-wide transition-all duration-300 ease-in-out group-hover:text-[#F4C7C7]">ಕನ್ನಡ</span>
+              </div>
+            </div>
           </div>
           <div className="hidden sm:flex sm:space-x-8">
             <button 
