@@ -1,35 +1,68 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from "react";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import DraggableLetter from "./components/DraggableLetter";
+import DropZone from "./components/DropZone";
+import TitlePage from "./components/TitlePage";
+import AlphabetBoard from "./components/AlphabetBoard";
 
-function App() {
-  const [count, setCount] = useState(0)
+const kannadaLetters = [
+    { id: 1, letter: "ಅ", correctSlot: 0 },
+    { id: 2, letter: "ಆ", correctSlot: 1 },
+    { id: 3, letter: "ಇ", correctSlot: 2 },
+    { id: 4, letter: "ಈ", correctSlot: 3 },
+];
+
+const App = () => {
+    const [gameState, setGameState] = useState('title'); // 'title' | 'alphabet' | 'game'
+    const [placedLetters, setPlacedLetters] = useState(Array(kannadaLetters.length).fill(null));
+
+    const handleDrop = (item, index) => {
+        if (kannadaLetters[index].id === item.id) {
+            const updatedLetters = [...placedLetters];
+            updatedLetters[index] = item.letter;
+            setPlacedLetters(updatedLetters);
+        }
+    };
+
+    const handleStartGame = () => {
+        setGameState('alphabet');
+    };
+
+    const handleStartPractice = () => {
+        setGameState('game');
+    };
+
+    if (gameState === 'title') {
+        return <TitlePage onStartGame={handleStartGame} />;
+    }
+
+    if (gameState === 'alphabet') {
+        return <AlphabetBoard onStartPractice={handleStartPractice} />;
+    }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+          <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 w-full">
+              <h1 className="text-2xl font-bold mb-4">Kannada Letter Matching</h1>
 
-export default App
+              <div className="flex space-x-4">
+                  {kannadaLetters.map((letter) => (
+                      <DraggableLetter key={letter.id} letter={letter.letter} id={letter.id} />
+                  ))}
+              </div>
+
+              <div className="mt-8 grid grid-cols-4 gap-4">
+                  {kannadaLetters.map((letter, index) => (
+                      <DropZone
+                          key={index}
+                          correctLetter={placedLetters[index]}
+                          onDrop={handleDrop}
+                          index={index}
+                      />
+                  ))}
+              </div>
+          </div>
+    );
+};
+
+export default App;
