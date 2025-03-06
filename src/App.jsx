@@ -21,18 +21,18 @@ const NavHeader = () => {
   const location = useLocation();
 
   return (
-    <header className="fixed top-0 left-0 right-0 bg-[#DB5375]/85 backdrop-blur-md transition-all duration-300 z-50">
+    <header className="fixed top-0 left-0 right-0 bg-[#DB5375]/90 backdrop-blur-lg shadow-lg transition-all duration-300 z-50">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           <div className="flex-shrink-0 cursor-pointer" onClick={() => navigate('/')}>
-            <div className="flex items-center space-x-3 group transition-all duration-300 ease-in-out">
+            <div className="flex items-center space-x-4 group transition-all duration-300 ease-in-out">
               <div className="relative">
-                <img src={logo} alt="DrLingua Logo" className="w-8 h-8 transition-all duration-700 ease-in-out transform group-hover:scale-110 group-hover:rotate-[360deg]" />
-                <div className="absolute inset-0 bg-[#F4C7C7]/5 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out blur-sm group-hover:blur-md"></div>
+                <img src={logo} alt="DrLingua Logo" className="w-10 h-10 transition-all duration-700 ease-in-out transform group-hover:scale-110 group-hover:rotate-[360deg] drop-shadow-lg" />
+                <div className="absolute inset-0 bg-white/20 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out blur-lg group-hover:blur-xl"></div>
               </div>
               <div className="flex flex-col transition-all duration-300 ease-in-out transform group-hover:translate-x-0.5">
-                <span className="text-xl font-bold text-[#F4C7C7] tracking-wider transition-all duration-300 ease-in-out group-hover:text-[#F4C7C7]">DrLingua</span>
-                <span className="text-xs text-[#F4C7C7]/70 font-medium -mt-1 tracking-wide transition-all duration-300 ease-in-out group-hover:text-[#F4C7C7]">ಕನ್ನಡ</span>
+                <span className="text-2xl font-bold text-white tracking-wider transition-all duration-300 ease-in-out drop-shadow-lg">DrLingua</span>
+                <span className="text-sm text-white/90 font-medium -mt-1 tracking-wide transition-all duration-300 ease-in-out">ಕನ್ನಡ</span>
               </div>
             </div>
           </div>
