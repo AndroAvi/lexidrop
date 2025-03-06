@@ -42,27 +42,29 @@ const App = () => {
     }
 
   return (
-          <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 w-full">
-              <h1 className="text-2xl font-bold mb-4">Kannada Letter Matching</h1>
+    <DndProvider backend={HTML5Backend}>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 w-full">
+        <h1 className="text-2xl font-bold mb-4">Kannada Letter Matching</h1>
 
-              <div className="flex space-x-4">
-                  {kannadaLetters.map((letter) => (
-                      <DraggableLetter key={letter.id} letter={letter.letter} id={letter.id} />
-                  ))}
-              </div>
+        <div className="flex space-x-4">
+          {kannadaLetters.map((letter) => (
+            <DraggableLetter key={letter.id} letter={letter.letter} id={letter.id} />
+          ))}
+        </div>
 
-              <div className="mt-8 grid grid-cols-4 gap-4">
-                  {kannadaLetters.map((letter, index) => (
-                      <DropZone
-                          key={index}
-                          correctLetter={placedLetters[index]}
-                          onDrop={handleDrop}
-                          index={index}
-                      />
-                  ))}
-              </div>
-          </div>
-    );
+        <div className="mt-8 grid grid-cols-4 gap-4">
+          {kannadaLetters.map((letter, index) => (
+            <DropZone
+              key={index}
+              correctLetter={placedLetters[index]}
+              onDrop={handleDrop}
+              index={index}
+            />
+          ))}
+        </div>
+      </div>
+    </DndProvider>
+  );
 };
 
 export default App;

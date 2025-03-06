@@ -1,4 +1,7 @@
 import React from 'react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import DraggableLetter from './DraggableLetter';
 
 // Vowels (ಸ್ವರಗಳು)
 const vowels = [
@@ -60,6 +63,11 @@ const consonants = [
 const kannadaAlphabet = [...vowels, ...consonants];
 
 const AlphabetBoard = ({ onStartPractice }) => {
+  // Create a flat array of draggable Kannada letters
+  const draggableLetters = kannadaAlphabet.map((letter, index) => ({
+    id: index + 1,
+    letter: letter.kannada
+  }));
   const ROWS = 6;
   const COLS = 9;
   
@@ -126,6 +134,23 @@ const AlphabetBoard = ({ onStartPractice }) => {
           </div>
           </div>
         </div>
+
+        {/* Draggable Kannada Letters Section */}
+        <div className="mt-12 bg-white/95 backdrop-blur rounded-xl p-8 shadow-lg w-fit mx-auto">
+          <h3 className="text-xl font-bold text-purple-600 mb-6 text-center">Kannada Letters</h3>
+          <DndProvider backend={HTML5Backend}>
+            <div className="grid grid-cols-9 gap-4 max-w-[720px]">
+              {draggableLetters.map((letter) => (
+                <DraggableLetter
+                  key={letter.id}
+                  letter={letter.letter}
+                  id={letter.id}
+                />
+              ))}
+            </div>
+          </DndProvider>
+        </div>
+
         <div className="mt-8 text-center">
           <button
             onClick={onStartPractice}
