@@ -64,10 +64,11 @@ const consonants = [
 const kannadaAlphabet = [...vowels, ...consonants];
 
 const AlphabetBoard = ({ onStartPractice }) => {
-  const [placedLetters, setPlacedLetters] = useState(Array(kannadaAlphabet.length).fill(null));
+  // Track letters that have been correctly placed in their slots
+  const [placedLetters, setPlacedLetters] = useState(new Set());
   const [showSuccess, setShowSuccess] = useState(false);
   const totalLetters = kannadaAlphabet.length;
-  const placedCount = placedLetters.filter(Boolean).length;
+  const placedCount = placedLetters.size;
   const progress = Math.round((placedCount / totalLetters) * 100);
 
   // Check for completion and trigger success animation
@@ -76,11 +77,21 @@ const AlphabetBoard = ({ onStartPractice }) => {
       setShowSuccess(true);
     }
   }, [progress]);
-  // Create a flat array of draggable Kannada letters
-  const draggableLetters = kannadaAlphabet.map((letter, index) => ({
-    id: index + 1,
-    letter: letter.kannada
-  }));
+  // Create a randomized array of draggable Kannada letters
+  const [randomizedLetters] = useState(() => {
+    const letters = kannadaAlphabet.map((letter, index) => ({
+      id: index + 1,
+      letter: letter.kannada
+    }));
+    
+    // Fisher-Yates shuffle algorithm
+    for (let i = letters.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [letters[i], letters[j]] = [letters[j], letters[i]];
+    }
+    
+    return letters;
+  });
   const ROWS = 6;
   const COLS = 9;
   
@@ -141,9 +152,9 @@ const AlphabetBoard = ({ onStartPractice }) => {
                       expectedKannada={kannadaLetter}
                       englishTransliteration={cell}
                       onDrop={(item) => {
-                        const newPlacedLetters = [...placedLetters];
-                        newPlacedLetters[index] = item.letter;
-                        setPlacedLetters(newPlacedLetters);
+                        if (item.letter === kannadaLetter) {
+                          setPlacedLetters(prev => new Set([...prev, item.letter]));
+                        }
                       }}
                     />
                   );
@@ -160,8 +171,8 @@ const AlphabetBoard = ({ onStartPractice }) => {
           <h3 className="text-xl font-bold text-purple-600 mb-6 text-center">Kannada Letters</h3>
           <DndProvider backend={HTML5Backend}>
             <div className="grid grid-cols-9 gap-4 w-[720px]">
-              {draggableLetters.map((letter) => {
-                const isPlaced = placedLetters.includes(letter.letter);
+              {randomizedLetters.map((letter) => {
+                const isPlaced = placedLetters.has(letter.letter);
                 return !isPlaced ? (
                   <DraggableLetter
                     key={letter.id}
