@@ -74,7 +74,7 @@ const blankSpaces = Array(blankSpacesNeeded).fill().map((_, index) => ({
 // Combine vowels, blank spaces, and consonants
 const kannadaAlphabet = [...vowels, ...blankSpaces, ...consonants];
 
-const AlphabetBoard = ({ onStartPractice }) => {
+const AlphabetBoard = () => {
   // Track letters that have been correctly placed in their slots
   const [placedLetters, setPlacedLetters] = useState(new Set());
   const [showSuccess, setShowSuccess] = useState(false);
@@ -253,37 +253,7 @@ const AlphabetBoard = ({ onStartPractice }) => {
           </div>
         </DndProvider>
 
-        <div className="mt-8 text-center space-y-4">
-          {/* Progress Bar */}
-          <div className="w-[640px] mx-auto bg-[#F4C7C7] rounded-full h-4 overflow-hidden">
-            <div
-              className={`h-full transition-all duration-500 ease-out rounded-full
-                ${progress === 100 ? 'bg-[#E34234] animate-[pulse_2s_ease-in-out_infinite]' : 'bg-[#E34234]'}`}
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-          <div className="text-[#F4C7C7] font-medium">
-            {progress === 100 ? (
-              <span className="text-[#F4C7C7] font-bold animate-[bounce_1s_ease-in-out_infinite]">
-                All letters placed correctly! Great job! 🎉
-              </span>
-            ) : (
-              <span>
-                {placedCount} of {totalLetters} letters placed correctly
-              </span>
-            )}
-          </div>
-          <button
-            onClick={() => progress === 100 && onStartPractice()}
-            className={`px-8 py-3 rounded-full text-lg font-semibold transform transition-all duration-300
-                     shadow-lg hover:shadow-xl ${progress === 100
-                       ? 'bg-[#E34234] text-[#F4C7C7] hover:bg-[#c93a2e] hover:scale-105'
-                       : 'bg-[#F4C7C7] text-[#E34234] hover:bg-[#f0baba] hover:scale-105 opacity-50 cursor-not-allowed'}`}
-            disabled={progress !== 100}
-          >
-            Start Writing Practice →
-          </button>
-        </div>
+
       </div>
     </div>
   );
