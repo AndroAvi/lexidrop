@@ -78,7 +78,7 @@ const AlphabetBoard = ({ onStartPractice }) => {
   // Track letters that have been correctly placed in their slots
   const [placedLetters, setPlacedLetters] = useState(new Set());
   const [showSuccess, setShowSuccess] = useState(false);
-  const totalLetters = kannadaAlphabet.length;
+  const totalLetters = kannadaAlphabet.length - blankSpaces.length;
   const placedCount = placedLetters.size;
   const progress = Math.round((placedCount / totalLetters) * 100);
 
@@ -122,10 +122,10 @@ const AlphabetBoard = ({ onStartPractice }) => {
          ${showSuccess ? 'animate-[pulse_1s_ease-in-out]' : ''}`}>
       <div className="min-h-screen w-full flex flex-col items-center justify-center py-8">
         <h2 className="text-3xl font-bold text-[#F4C7C7] text-center mb-4">
-          Kannada Matrix
+          Kannada Drag n Drop
         </h2>
         <p className="text-center text-[#F4C7C7] text-lg mb-8">
-          Fill in the Kannada letters matching these English sounds
+          Fill in the Kannada letters matching their English sounds
         </p>
 
         <DndProvider backend={HTML5Backend}>
