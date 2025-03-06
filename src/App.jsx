@@ -20,24 +20,24 @@ const NavHeader = () => {
   const location = useLocation();
 
   return (
-    <header className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur shadow-sm z-50">
+    <header className="fixed top-0 left-0 right-0 bg-[#DB5375]/95 backdrop-blur shadow-sm z-50">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           <div className="flex-shrink-0 cursor-pointer" onClick={() => navigate('/')}>
-            <h1 className="text-xl font-bold text-purple-600">DrLingua Kannada</h1>
+            <h1 className="text-xl font-bold text-[#F4C7C7]">DrLingua Kannada</h1>
           </div>
           <div className="hidden sm:flex sm:space-x-8">
             <button 
               onClick={() => navigate('/')}
-              className={`${location.pathname === '/' ? 'text-purple-600 border-purple-600' : 'text-gray-500 border-transparent'}
-                         hover:text-purple-600 px-3 py-2 text-sm font-medium border-b-2 transition-all duration-200`}
+              className={`${location.pathname === '/' ? 'text-[#F4C7C7] border-[#F4C7C7]' : 'text-[#F4C7C7]/70 border-transparent'}
+                         hover:text-[#F4C7C7] px-3 py-2 text-sm font-medium border-b-2 transition-all duration-200`}
             >
               Home
             </button>
             <button 
               onClick={() => navigate('/bento')}
-              className={`${location.pathname === '/bento' ? 'text-purple-600 border-purple-600' : 'text-gray-500 border-transparent'}
-                         hover:text-purple-600 px-3 py-2 text-sm font-medium border-b-2 transition-all duration-200`}
+              className={`${location.pathname === '/bento' ? 'text-[#F4C7C7] border-[#F4C7C7]' : 'text-[#F4C7C7]/70 border-transparent'}
+                         hover:text-[#F4C7C7] px-3 py-2 text-sm font-medium border-b-2 transition-all duration-200`}
             >
               Bento Board
             </button>
@@ -66,7 +66,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <DndProvider backend={HTML5Backend}>
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-[#DB5375]">
           <NavHeader />
           <main className="pt-16">
             <Routes>
@@ -96,18 +96,18 @@ const Game = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 w-full">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#DB5375] w-full">
       <div className="flex items-center justify-between w-full max-w-3xl mb-8 px-4">
         <button
           onClick={() => navigate('/bento')}
-          className="flex items-center space-x-2 text-purple-600 hover:text-purple-700 font-medium"
+          className="flex items-center space-x-2 text-[#F4C7C7] hover:text-[#F4C7C7]/80 font-medium"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
           </svg>
           <span>Back to Bento Board</span>
         </button>
-        <h1 className="text-2xl font-bold">Kannada Letter Matching</h1>
+        <h1 className="text-2xl font-bold text-[#F4C7C7]">Kannada Letter Matching</h1>
       </div>
 
       <div className="flex space-x-4">

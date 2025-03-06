@@ -32,11 +32,11 @@ const DraggableLetter = ({ letter, id, isKannada = true }) => {
         <div
             ref={drag}
             style={dragPreviewStyle}
-            className={`w-14 h-14 flex items-center justify-center bg-purple-50 border-2 border-purple-300 
-                       ${isKannada ? 'text-3xl' : 'text-xl'} font-bold text-purple-700 rounded-lg cursor-move
+            className={`w-14 h-14 flex items-center justify-center bg-[#F4C7C7] border-2 border-[#E34234] 
+                       ${isKannada ? 'text-3xl' : 'text-xl'} font-bold text-[#E34234] rounded-lg cursor-move
                        transition-all duration-200 select-none
-                       hover:bg-purple-100 hover:border-purple-400 hover:shadow-md
-                       ${isDragging ? 'opacity-75 scale-110 ring-2 ring-purple-400 shadow-lg z-50' : 'hover:scale-105'}`}
+                       hover:bg-[#f0baba] hover:border-[#c93a2e] hover:shadow-md
+                       ${isDragging ? 'opacity-90 scale-110 ring-2 ring-[#E34234] shadow-lg z-50' : 'hover:scale-105'}`}
         >
             {letter}
         </div>
