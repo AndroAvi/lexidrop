@@ -20,7 +20,7 @@ const blankSpaces = Array(blankSpacesNeeded).fill().map((_, index) => ({
 // Combine vowels, blank spaces, and consonants
 const alphabet = [...vowels, ...blankSpaces, ...consonants];
 
-const AlphabetBoard = ({ onStartPractice }) => {
+const AlphabetBoard = () => {
   // Track letters that have been correctly placed in their slots
   const [placedLetters, setPlacedLetters] = useState(new Set());
   const [showSuccess, setShowSuccess] = useState(false);
@@ -198,16 +198,6 @@ const AlphabetBoard = ({ onStartPractice }) => {
               </span>
             )}
           </div>
-          <button
-            onClick={() => progress === 100 && onStartPractice()}
-            className={`px-8 py-3 rounded-full text-lg font-semibold transform transition-all duration-300
-                     shadow-lg hover:shadow-xl ${progress === 100
-                       ? 'bg-[#E34234] text-[#F4C7C7] hover:bg-[#c93a2e] hover:scale-105'
-                       : 'bg-[#F4C7C7] text-[#E34234] hover:bg-[#f0baba] hover:scale-105 opacity-50 cursor-not-allowed'}`}
-            disabled={progress !== 100}
-          >
-            Start Writing Practice →
-          </button>
         </div>
       </div>
     </div>
