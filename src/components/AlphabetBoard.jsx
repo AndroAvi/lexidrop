@@ -3,63 +3,9 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import DraggableLetter from './DraggableLetter';
 import DropZone from './DropZone';
+import ALPHABET from  "../constants/languages/kannada";
 
-// Vowels (ಸ್ವರಗಳು)
-const vowels = [
-  { kannada: 'ಅ', english: 'a' },
-  { kannada: 'ಆ', english: 'aa' },
-  { kannada: 'ಇ', english: 'i' },
-  { kannada: 'ಈ', english: 'ii' },
-  { kannada: 'ಉ', english: 'u' },
-  { kannada: 'ಊ', english: 'uu' },
-  { kannada: 'ಋ', english: 'ru' },
-  { kannada: 'ಎ', english: 'e' },
-  { kannada: 'ಏ', english: 'ee' },
-  { kannada: 'ಐ', english: 'ai' },
-  { kannada: 'ಒ', english: 'o' },
-  { kannada: 'ಓ', english: 'oo' },
-  { kannada: 'ಔ', english: 'au' },
-  { kannada: 'ಅಂ', english: 'am' },
-  { kannada: 'ಅಃ', english: 'ah' },
-];
-
-// Consonants (ವ್ಯಂಜನಗಳು)
-const consonants = [
-  { kannada: 'ಕ', english: 'ka' },
-  { kannada: 'ಖ', english: 'kha' },
-  { kannada: 'ಗ', english: 'ga' },
-  { kannada: 'ಘ', english: 'gha' },
-  { kannada: 'ಙ', english: 'nga' },
-  { kannada: 'ಚ', english: 'cha' },
-  { kannada: 'ಛ', english: 'chha' },
-  { kannada: 'ಜ', english: 'ja' },
-  { kannada: 'ಝ', english: 'jha' },
-  { kannada: 'ಞ', english: 'nya' },
-  { kannada: 'ಟ', english: 'ta' },
-  { kannada: 'ಠ', english: 'tha' },
-  { kannada: 'ಡ', english: 'da' },
-  { kannada: 'ಢ', english: 'dha' },
-  { kannada: 'ಣ', english: 'Na' },
-  { kannada: 'ತ', english: 'tha' },
-  { kannada: 'ಥ', english: 'thha' },
-  { kannada: 'ದ', english: 'dha' },
-  { kannada: 'ಧ', english: 'dhha' },
-  { kannada: 'ನ', english: 'na' },
-  { kannada: 'ಪ', english: 'pa' },
-  { kannada: 'ಫ', english: 'pha' },
-  { kannada: 'ಬ', english: 'ba' },
-  { kannada: 'ಭ', english: 'bha' },
-  { kannada: 'ಮ', english: 'ma' },
-  { kannada: 'ಯ', english: 'ya' },
-  { kannada: 'ರ', english: 'ra' },
-  { kannada: 'ಲ', english: 'la' },
-  { kannada: 'ವ', english: 'va' },
-  { kannada: 'ಶ', english: 'sha' },
-  { kannada: 'ಷ', english: 'Sha' },
-  { kannada: 'ಸ', english: 'sa' },
-  { kannada: 'ಹ', english: 'ha' },
-  { kannada: 'ಳ', english: 'La' },
-];
+const {languageName, vowels, consonants} = ALPHABET;
 
 // Calculate how many blank spaces we need to add after vowels to ensure consonants start on a new row
 const vowelsRowCount = Math.ceil(vowels.length / 8);
@@ -67,18 +13,18 @@ const blankSpacesNeeded = (vowelsRowCount * 8) - vowels.length;
 
 // Create blank spaces to fill the row
 const blankSpaces = Array(blankSpacesNeeded).fill().map((_, index) => ({
-  kannada: null,
+  native: null,
   english: null
 }));
 
 // Combine vowels, blank spaces, and consonants
-const kannadaAlphabet = [...vowels, ...blankSpaces, ...consonants];
+const alphabet = [...vowels, ...blankSpaces, ...consonants];
 
 const AlphabetBoard = ({ onStartPractice }) => {
   // Track letters that have been correctly placed in their slots
   const [placedLetters, setPlacedLetters] = useState(new Set());
   const [showSuccess, setShowSuccess] = useState(false);
-  const totalLetters = kannadaAlphabet.length - blankSpaces.length;
+  const totalLetters = alphabet.length - blankSpaces.length;
   const placedCount = placedLetters.size;
   const progress = Math.round((placedCount / totalLetters) * 100);
 
@@ -91,9 +37,9 @@ const AlphabetBoard = ({ onStartPractice }) => {
 
   // Create a randomized array of draggable Kannada letters
   const [randomizedLetters] = useState(() => {
-    const letters = kannadaAlphabet.map((letter, index) => ({
+    const letters = alphabet.map((letter, index) => ({
       id: index + 1,
-      letter: letter.kannada
+      letter: letter.native
     }));
 
     // Fisher-Yates shuffle algorithm
@@ -107,12 +53,12 @@ const AlphabetBoard = ({ onStartPractice }) => {
 
   const COLS = 8;
   // Calculate required rows based on total letters
-  const ROWS = Math.ceil(kannadaAlphabet.length / COLS);
+  const ROWS = Math.ceil(alphabet.length / COLS);
 
   // Create a flat array of all cells needed
   const cells = Array(ROWS * COLS).fill(null).map((_, index) => {
-    if (index < kannadaAlphabet.length) {
-      return kannadaAlphabet[index].english;
+    if (index < alphabet.length) {
+      return alphabet[index].english;
     }
     return null;
   });
@@ -133,13 +79,13 @@ const AlphabetBoard = ({ onStartPractice }) => {
           <div className="flex flex-row justify-center gap-8 w-full px-4">
             {/* Left side: Draggable Kannada Letters */}
             <div className="bg-[#F4C7C7] rounded-xl p-8 shadow-lg w-1/2 max-w-xl">
-              <h3 className="text-xl font-bold text-[#E34234] mb-6 text-center">Kannada Letters</h3>
+              <h3 className="text-xl font-bold text-[#E34234] mb-6 text-center">{languageName} Letters</h3>
               <div className="w-full">
                 {/* Vowels Section */}
                 <div className="text-sm font-medium text-[#E34234]/80 mb-2 text-left">Vowels (ಸ್ವರಗಳು)</div>
                 <div className="grid grid-cols-5 gap-4 mb-6">
                   {randomizedLetters
-                    .filter(letter => vowels.some(v => v.kannada === letter.letter))
+                    .filter(letter => vowels.some(v => v.native === letter.letter))
                     .map((letter) => {
                       const isPlaced = placedLetters.has(letter.letter);
                       return !isPlaced ? (
@@ -161,7 +107,7 @@ const AlphabetBoard = ({ onStartPractice }) => {
                 <div className="text-sm font-medium text-[#E34234]/80 mb-2 text-left">Consonants (ವ್ಯಂಜನಗಳು)</div>
                 <div className="grid grid-cols-5 gap-4">
                   {randomizedLetters
-                    .filter(letter => consonants.some(c => c.kannada === letter.letter))
+                    .filter(letter => consonants.some(c => c.native === letter.letter))
                     .map((letter) => {
                       const isPlaced = placedLetters.has(letter.letter);
                       return !isPlaced ? (
@@ -187,7 +133,7 @@ const AlphabetBoard = ({ onStartPractice }) => {
                 <div className="grid grid-cols-5 gap-4">
                   {/* Vowels Section */}
                   {cells.slice(0, vowels.length).map((cell, index) => {
-                    const kannadaLetter = index < vowels.length ? vowels[index].kannada : null;
+                    const kannadaLetter = index < vowels.length ? vowels[index].native : null;
                     return (
                       <DropZone
                         key={index}
@@ -212,7 +158,7 @@ const AlphabetBoard = ({ onStartPractice }) => {
                   {/* Consonants Section */}
                   {cells.slice(vowels.length + blankSpacesNeeded).map((cell, index) => {
                     const consonantIndex = index + vowels.length + blankSpacesNeeded;
-                    const kannadaLetter = consonantIndex < kannadaAlphabet.length ? kannadaAlphabet[consonantIndex].kannada : null;
+                    const kannadaLetter = consonantIndex < alphabet.length ? alphabet[consonantIndex].native : null;
                     return (
                       <DropZone
                         key={consonantIndex}

@@ -1,0 +1,63 @@
+const vowels = [
+    { native: 'ಅ', english: 'a' },
+    { native: 'ಆ', english: 'aa' },
+    { native: 'ಇ', english: 'i' },
+    { native: 'ಈ', english: 'ii' },
+    { native: 'ಉ', english: 'u' },
+    { native: 'ಊ', english: 'uu' },
+    { native: 'ಋ', english: 'ru' },
+    { native: 'ಎ', english: 'e' },
+    { native: 'ಏ', english: 'ee' },
+    { native: 'ಐ', english: 'ai' },
+    { native: 'ಒ', english: 'o' },
+    { native: 'ಓ', english: 'oo' },
+    { native: 'ಔ', english: 'au' },
+    { native: 'ಅಂ', english: 'am' },
+    { native: 'ಅಃ', english: 'ah' },
+]
+
+const consonants = [
+    { native: 'ಕ', english: 'ka' },
+    { native: 'ಖ', english: 'kha' },
+    { native: 'ಗ', english: 'ga' },
+    { native: 'ಘ', english: 'gha' },
+    { native: 'ಙ', english: 'nga' },
+    { native: 'ಚ', english: 'cha' },
+    { native: 'ಛ', english: 'chha' },
+    { native: 'ಜ', english: 'ja' },
+    { native: 'ಝ', english: 'jha' },
+    { native: 'ಞ', english: 'nya' },
+    { native: 'ಟ', english: 'ta' },
+    { native: 'ಠ', english: 'tha' },
+    { native: 'ಡ', english: 'da' },
+    { native: 'ಢ', english: 'dha' },
+    { native: 'ಣ', english: 'Na' },
+    { native: 'ತ', english: 'tha' },
+    { native: 'ಥ', english: 'thha' },
+    { native: 'ದ', english: 'dha' },
+    { native: 'ಧ', english: 'dhha' },
+    { native: 'ನ', english: 'na' },
+    { native: 'ಪ', english: 'pa' },
+    { native: 'ಫ', english: 'pha' },
+    { native: 'ಬ', english: 'ba' },
+    { native: 'ಭ', english: 'bha' },
+    { native: 'ಮ', english: 'ma' },
+    { native: 'ಯ', english: 'ya' },
+    { native: 'ರ', english: 'ra' },
+    { native: 'ಲ', english: 'la' },
+    { native: 'ವ', english: 'va' },
+    { native: 'ಶ', english: 'sha' },
+    { native: 'ಷ', english: 'Sha' },
+    { native: 'ಸ', english: 'sa' },
+    { native: 'ಹ', english: 'ha' },
+    { native: 'ಳ', english: 'La' },
+]
+
+const ALPHABET = {
+    languageName: 'Kannada',
+    vowels: vowels,
+    consonants: consonants,
+    omniglotLink: 'https://omniglot.com/writing/kannada.htm'
+}
+
+export default ALPHABET;
