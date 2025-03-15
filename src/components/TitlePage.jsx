@@ -6,10 +6,10 @@ const TitlePage = ({ onStartGame }) => {
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="max-w-4xl w-full text-center space-y-8 px-4">
         <h1 className="text-6xl font-bold mb-4 animate-fade-in">
-          DrLingua ಕನ್ನಡ Bento
+          LexiDrop
         </h1>
         <p className="text-xl mb-8 text-[#F4C7C7]">
-          Learn Kannada script through an engaging drag-and-drop experience
+          Learn language scripts through an engaging drag-and-drop experience.
         </p>
         <div className="space-y-4">
           <button
@@ -22,7 +22,7 @@ const TitlePage = ({ onStartGame }) => {
           </button>
         </div>
         <div className="mt-12 text-[#F4C7C7]">
-          <p className="text-lg">Master Kannada characters one by one</p>
+          <p className="text-lg">Master characters one by one</p>
           <p className="text-sm mt-2">Drag and drop to match the correct positions</p>
         </div>
         </div>

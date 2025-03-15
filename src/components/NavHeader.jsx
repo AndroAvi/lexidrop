@@ -1,6 +1,5 @@
 import {useLocation, useNavigate} from "react-router-dom";
 import logo from "../assets/logo.svg";
-import React from "react";
 
 const NavHeader = () => {
     const navigate = useNavigate();
@@ -17,8 +16,8 @@ const NavHeader = () => {
                                 <div className="absolute inset-0 bg-white/20 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out blur-lg group-hover:blur-xl"></div>
                             </div>
                             <div className="flex flex-col transition-all duration-300 ease-in-out transform group-hover:translate-x-0.5">
-                                <span className="text-2xl font-bold text-white tracking-wider transition-all duration-300 ease-in-out drop-shadow-lg">DrLingua</span>
-                                <span className="text-sm text-white/90 font-medium -mt-1 tracking-wide transition-all duration-300 ease-in-out">ಕನ್ನಡ</span>
+                                <span className="text-2xl font-bold text-white tracking-wider transition-all duration-300 ease-in-out drop-shadow-lg">LexiDrop</span>
+                                {/*<span className="text-sm text-white/90 font-medium -mt-1 tracking-wide transition-all duration-300 ease-in-out">ಕನ್ನಡ</span>*/}
                             </div>
                         </div>
                     </div>
@@ -32,10 +31,10 @@ const NavHeader = () => {
                         </button>
                         <button
                             onClick={() => navigate('/game_board')}
-                            className={`${location.pathname === '/bento' ? 'text-[#F4C7C7] border-[#F4C7C7]' : 'text-[#F4C7C7]/70 border-transparent'}
+                            className={`${location.pathname === '/game_board' ? 'text-[#F4C7C7] border-[#F4C7C7]' : 'text-[#F4C7C7]/70 border-transparent'}
                          hover:text-[#F4C7C7] px-3 py-2 text-sm font-medium border-b-2 transition-all duration-200`}
                         >
-                            Bento Board
+                            Game Board
                         </button>
                     </div>
                 </div>

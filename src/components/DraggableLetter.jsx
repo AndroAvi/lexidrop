@@ -1,7 +1,6 @@
-import React from "react";
-import { useDrag } from "react-dnd";
+import {useDrag} from "react-dnd";
 
-const DraggableLetter = ({ letter, id, isKannada = true }) => {
+const DraggableLetter = ({ letter, id }) => {
     const [{ isDragging }, drag] = useDrag(() => ({
         type: "LETTER",
         item: { id, letter },
@@ -33,7 +32,7 @@ const DraggableLetter = ({ letter, id, isKannada = true }) => {
             ref={drag}
             style={dragPreviewStyle}
             className={`w-14 h-14 flex items-center justify-center bg-[#F4C7C7] border-2 border-[#E34234] 
-                       ${isKannada ? 'text-3xl' : 'text-xl'} font-bold text-[#E34234] rounded-lg cursor-move
+                       text-3xl font-bold text-[#E34234] rounded-lg cursor-move
                        transition-all duration-200 select-none
                        hover:bg-[#f0baba] hover:border-[#c93a2e] hover:shadow-md
                        ${isDragging ? 'opacity-90 scale-110 ring-2 ring-[#E34234] shadow-lg z-50' : 'hover:scale-105'}`}

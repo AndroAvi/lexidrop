@@ -1,7 +1,17 @@
-import AlphabetBoard from "../components/AlphabetBoard.jsx";
+import {useLanguages} from "../hooks/useLanguages";
+import AlphabetBoard from "../components/AlphabetBoard";
+import SelectionScreen from "../components/SelectionScreen";
 
 const GameBoard = () => {
-    return <AlphabetBoard />;
+    const { languageNames, selectedLanguageData, selectLanguage } = useLanguages();
+
+    if (selectedLanguageData) {
+        return <AlphabetBoard {...selectedLanguageData} />;
+    }
+
+    return (
+        <SelectionScreen languages={languageNames} handleLanguageSelect={selectLanguage} />
+    );
 };
 
 export default GameBoard;

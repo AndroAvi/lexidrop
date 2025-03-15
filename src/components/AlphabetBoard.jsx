@@ -1,26 +1,23 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import DraggableLetter from './DraggableLetter';
 import DropZone from './DropZone';
-import ALPHABET from  "../constants/languages/kannada";
 
-const {languageName, vowels, consonants} = ALPHABET;
+const AlphabetBoard = ({languageName, vowels, consonants}) => {
+  // Calculate how many blank spaces we need to add after vowels to ensure consonants start on a new row
+  const vowelsRowCount = Math.ceil(vowels.length / 8);
+  const blankSpacesNeeded = (vowelsRowCount * 8) - vowels.length;
 
-// Calculate how many blank spaces we need to add after vowels to ensure consonants start on a new row
-const vowelsRowCount = Math.ceil(vowels.length / 8);
-const blankSpacesNeeded = (vowelsRowCount * 8) - vowels.length;
+  // Create blank spaces to fill the row
+  const blankSpaces = Array(blankSpacesNeeded).fill().map((_, index) => ({
+    native: null,
+    english: null
+  }));
 
-// Create blank spaces to fill the row
-const blankSpaces = Array(blankSpacesNeeded).fill().map((_, index) => ({
-  native: null,
-  english: null
-}));
+  // Combine vowels, blank spaces, and consonants
+  const alphabet = [...vowels, ...blankSpaces, ...consonants];
 
-// Combine vowels, blank spaces, and consonants
-const alphabet = [...vowels, ...blankSpaces, ...consonants];
-
-const AlphabetBoard = () => {
   // Track letters that have been correctly placed in their slots
   const [placedLetters, setPlacedLetters] = useState(new Set());
   const [showSuccess, setShowSuccess] = useState(false);
@@ -29,13 +26,13 @@ const AlphabetBoard = () => {
   const progress = Math.round((placedCount / totalLetters) * 100);
 
   // Check for completion and trigger success animation
-  React.useEffect(() => {
+  useEffect(() => {
     if (progress === 100 && !showSuccess) {
       setShowSuccess(true);
     }
-  }, [progress]);
+  }, [progress, showSuccess]);
 
-  // Create a randomized array of draggable Kannada letters
+  // Create a randomized array of draggable letters
   const [randomizedLetters] = useState(() => {
     const letters = alphabet.map((letter, index) => ({
       id: index + 1,
@@ -68,16 +65,16 @@ const AlphabetBoard = () => {
          ${showSuccess ? 'animate-[pulse_1s_ease-in-out]' : ''}`}>
       <div className="min-h-screen w-full flex flex-col items-center justify-center py-8">
         <h2 className="text-3xl font-bold text-[#F4C7C7] text-center mb-4">
-          Kannada Drag n Drop
+          {languageName} Drag n Drop
         </h2>
         <p className="text-center text-[#F4C7C7] text-lg mb-8">
-          Fill in the Kannada letters matching their English sounds
+          Fill in the {languageName} letters matching their English sounds
         </p>
 
         <DndProvider backend={HTML5Backend}>
           {/* Main content area with side-by-side layout */}
           <div className="flex flex-row justify-center gap-8 w-full px-4">
-            {/* Left side: Draggable Kannada Letters */}
+            {/* Left side: Draggable Native Language Letters */}
             <div className="bg-[#F4C7C7] rounded-xl p-8 shadow-lg w-1/2 max-w-xl">
               <h3 className="text-xl font-bold text-[#E34234] mb-6 text-center">{languageName} Letters</h3>
               <div className="w-full">
@@ -133,14 +130,14 @@ const AlphabetBoard = () => {
                 <div className="grid grid-cols-5 gap-4">
                   {/* Vowels Section */}
                   {cells.slice(0, vowels.length).map((cell, index) => {
-                    const kannadaLetter = index < vowels.length ? vowels[index].native : null;
+                    const nativeLetter = index < vowels.length ? vowels[index].native : null;
                     return (
                       <DropZone
                         key={index}
-                        expectedKannada={kannadaLetter}
+                        expectedNative={nativeLetter}
                         englishTransliteration={cell}
                         onDrop={(item) => {
-                          if (item.letter === kannadaLetter) {
+                          if (item.letter === nativeLetter) {
                             setPlacedLetters(prev => new Set([...prev, item.letter]));
                           }
                         }}
@@ -158,14 +155,14 @@ const AlphabetBoard = () => {
                   {/* Consonants Section */}
                   {cells.slice(vowels.length + blankSpacesNeeded).map((cell, index) => {
                     const consonantIndex = index + vowels.length + blankSpacesNeeded;
-                    const kannadaLetter = consonantIndex < alphabet.length ? alphabet[consonantIndex].native : null;
+                    const nativeLetter = consonantIndex < alphabet.length ? alphabet[consonantIndex].native : null;
                     return (
                       <DropZone
                         key={consonantIndex}
-                        expectedKannada={kannadaLetter}
+                        expectedNative={nativeLetter}
                         englishTransliteration={cell}
                         onDrop={(item) => {
-                          if (item.letter === kannadaLetter) {
+                          if (item.letter === nativeLetter) {
                             setPlacedLetters(prev => new Set([...prev, item.letter]));
                           }
                         }}
