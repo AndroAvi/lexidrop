@@ -3,6 +3,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import DraggableLetter from './DraggableLetter';
 import DropZone from './DropZone';
+import { colors, layout, typography, grids, progress, separator, combineClasses } from '../styles/styles';
 
 const AlphabetBoard = ({languageName, vowels, consonants}) => {
   // Calculate how many blank spaces we need to add after vowels to ensure consonants start on a new row
@@ -61,13 +62,17 @@ const AlphabetBoard = ({languageName, vowels, consonants}) => {
   });
 
   return (
-    <div className={`min-h-screen w-screen overflow-auto bg-[#DB5375] flex items-center justify-center
-         ${showSuccess ? 'animate-[pulse_1s_ease-in-out]' : ''}`}>
-      <div className="min-h-screen w-full flex flex-col items-center justify-center py-8">
-        <h2 className="text-3xl font-bold text-[#F4C7C7] text-center mb-4">
+    <div className={combineClasses(
+      layout.fullScreen,
+      colors.primary,
+      layout.centered,
+      showSuccess ? 'animate-[pulse_1s_ease-in-out]' : ''
+    )}>
+      <div className={layout.container}>
+        <h2 className={typography.heading}>
           {languageName} Drag n Drop
         </h2>
-        <p className="text-center text-[#F4C7C7] text-lg mb-8">
+        <p className={typography.paragraph}>
           Fill in the {languageName} letters matching their English sounds
         </p>
 
@@ -75,12 +80,12 @@ const AlphabetBoard = ({languageName, vowels, consonants}) => {
           {/* Main content area with side-by-side layout */}
           <div className="flex flex-row justify-center gap-8 w-full px-4">
             {/* Left side: Draggable Native Language Letters */}
-            <div className="bg-[#F4C7C7] rounded-xl p-8 shadow-lg w-1/2 max-w-xl">
-              <h3 className="text-xl font-bold text-[#E34234] mb-6 text-center">{languageName} Letters</h3>
+            <div className={combineClasses(layout.card, "w-1/2 max-w-xl")}>
+              <h3 className={typography.subheading}>{languageName} Letters</h3>
               <div className="w-full">
                 {/* Vowels Section */}
-                <div className="text-sm font-medium text-[#E34234]/80 mb-2 text-left">Vowels (ಸ್ವರಗಳು)</div>
-                <div className="grid grid-cols-5 gap-4 mb-6">
+                <div className={typography.sectionLabel}>Vowels (ಸ್ವರಗಳು)</div>
+                <div className={combineClasses(grids.fiveColumns, 'mb-6')}>
                   {randomizedLetters
                     .filter(letter => vowels.some(v => v.native === letter.letter))
                     .map((letter) => {
@@ -98,11 +103,11 @@ const AlphabetBoard = ({languageName, vowels, consonants}) => {
                 </div>
 
                 {/* Separator Line */}
-                <div className="border-b-2 border-[#E34234]/20 my-6"></div>
+                <div className={separator.default}></div>
 
                 {/* Consonants Section */}
-                <div className="text-sm font-medium text-[#E34234]/80 mb-2 text-left">Consonants (ವ್ಯಂಜನಗಳು)</div>
-                <div className="grid grid-cols-5 gap-4">
+                <div className={typography.sectionLabel}>Consonants (ವ್ಯಂಜನಗಳು)</div>
+                <div className={grids.fiveColumns}>
                   {randomizedLetters
                     .filter(letter => consonants.some(c => c.native === letter.letter))
                     .map((letter) => {
@@ -122,12 +127,12 @@ const AlphabetBoard = ({languageName, vowels, consonants}) => {
             </div>
 
             {/* Right side: Drop Zones */}
-            <div className="bg-[#F4C7C7] rounded-xl p-8 shadow-lg w-1/2 max-w-xl">
-              <h3 className="text-xl font-bold text-[#E34234] mb-6 text-center">English Transliterations</h3>
+            <div className={combineClasses(layout.card, "w-1/2 max-w-xl")}>
+              <h3 className={typography.subheading}>English Transliterations</h3>
               <div className="w-full">
                 {/* Section Label for Vowels */}
-                <div className="text-sm font-medium text-[#E34234]/80 mb-2 text-left">Vowels (ಸ್ವರಗಳು)</div>
-                <div className="grid grid-cols-5 gap-4">
+                <div className={typography.sectionLabel}>Vowels (ಸ್ವರಗಳು)</div>
+                <div className={grids.fiveColumns}>
                   {/* Vowels Section */}
                   {cells.slice(0, vowels.length).map((cell, index) => {
                     const nativeLetter = index < vowels.length ? vowels[index].native : null;
@@ -147,11 +152,11 @@ const AlphabetBoard = ({languageName, vowels, consonants}) => {
                 </div>
 
                 {/* Separator Line */}
-                <div className="border-b-2 border-[#E34234]/20 my-6"></div>
+                <div className={separator.default}></div>
 
                 {/* Section Label for Consonants */}
-                <div className="text-sm font-medium text-[#E34234]/80 mb-2 text-left">Consonants (ವ್ಯಂಜನಗಳು)</div>
-                <div className="grid grid-cols-5 gap-4">
+                <div className={typography.sectionLabel}>Consonants (ವ್ಯಂಜನಗಳು)</div>
+                <div className={grids.fiveColumns}>
                   {/* Consonants Section */}
                   {cells.slice(vowels.length + blankSpacesNeeded).map((cell, index) => {
                     const consonantIndex = index + vowels.length + blankSpacesNeeded;
@@ -177,16 +182,18 @@ const AlphabetBoard = ({languageName, vowels, consonants}) => {
 
         <div className="mt-8 text-center space-y-4 w-full max-w-4xl">
           {/* Progress Bar */}
-          <div className="w-full mx-auto bg-[#F4C7C7] rounded-full h-4 overflow-hidden">
+          <div className={progress.container}>
             <div
-              className={`h-full transition-all duration-500 ease-out rounded-full
-                ${progress === 100 ? 'bg-[#E34234] animate-[pulse_2s_ease-in-out_infinite]' : 'bg-[#E34234]'}`}
+              className={combineClasses(
+                progress.bar,
+                progress === 100 ? progress.complete : ''
+              )}
               style={{ width: `${progress}%` }}
             />
           </div>
-          <div className="text-[#F4C7C7] font-medium">
+          <div className={colors.lightText}>
             {progress === 100 ? (
-              <span className="text-[#F4C7C7] font-bold animate-[bounce_1s_ease-in-out_infinite]">
+              <span className={combineClasses(colors.lightText, 'font-bold animate-[bounce_1s_ease-in-out_infinite]')}>
                 All letters placed correctly! Great job! 🎉
               </span>
             ) : (

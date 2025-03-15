@@ -5,7 +5,6 @@ import Home from "./pages/Home";
 import GameBoard from "./pages/GameBoard";
 
 const App = () => {
-
   return (
     <BrowserRouter>
         <div className="min-h-screen bg-[#DB5375]">
