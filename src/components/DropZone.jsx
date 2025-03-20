@@ -30,32 +30,32 @@ const DropZone = ({ expectedNative, englishTransliteration, onDrop, reset }) => 
 
     // Determine the appropriate style based on the state
     const getDropZoneStyle = () => {
-        if (!expectedNative) return 'border-[#E34234]/20 bg-[#F4C7C7]/30';
-        if (droppedLetter) return 'border-[#E34234] bg-[#E34234] shadow-md scale-100 animate-[pulse_2s_ease-in-out_1]';
-        if (isOver && canDrop) return 'border-[#E34234] bg-[#F4C7C7] shadow-lg scale-105';
-        if (isOver && !canDrop) return 'border-[#E34234] bg-[#F4C7C7]/50 shadow-lg scale-105';
-        return 'border-[#E34234]/50 bg-[#F4C7C7]/80 hover:border-[#E34234] hover:shadow-md hover:bg-[#F4C7C7]';
+        if (!expectedNative) return 'bg-transparent';
+        if (droppedLetter) return 'bg-[#E34234] shadow-sm animate-[pulse_1.5s_ease-in-out_1]';
+        if (isOver && canDrop) return 'bg-[#F4C7C7]/80 shadow-sm';
+        if (isOver && !canDrop) return 'bg-[#F4C7C7]/40';
+        return 'bg-[#F4C7C7]/30 hover:bg-[#F4C7C7]/50';
     };
     
     return (
         <div
             ref={drop}
             className={combineClasses(
-                'h-14 w-14 flex flex-col items-center justify-center border-2',
+                'h-9 w-9 sm:h-10 sm:w-10 md:h-12 md:w-12 flex items-center justify-center',
                 getDropZoneStyle(),
-                'rounded-lg',
+                'rounded-md',
                 interactive.transition,
                 expectedNative && !droppedLetter ? 'cursor-pointer' : ''
             )}
         >
             {expectedNative ? (
-                <div className="flex flex-col items-center justify-center space-y-1">
+                <div className="flex items-center justify-center">
                     {droppedLetter ? (
-                        <span className={combineClasses('text-2xl font-bold', colors.lightText, 'select-none')}>
+                        <span className={combineClasses('text-lg sm:text-xl md:text-2xl font-bold text-white select-none')}>
                             {droppedLetter}
                         </span>
                     ) : (
-                        <span className={combineClasses('text-base font-semibold', colors.secondaryText, 'select-none tracking-wide')}>
+                        <span className={combineClasses('text-xs sm:text-sm md:text-base font-medium text-[#E34234]/90 select-none')}>
                             {englishTransliteration}
                         </span>
                     )}

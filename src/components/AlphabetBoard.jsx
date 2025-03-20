@@ -3,7 +3,8 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import DraggableLetter from './DraggableLetter';
 import DropZone from './DropZone';
-import { colors, layout, typography, grids, progress, separator, combineClasses } from '../styles/styles';
+import CustomDragLayer from './CustomDragLayer';
+import { colors, layout, typography, progress, combineClasses } from '../styles/styles';
 
 const AlphabetBoard = ({languageName, vowels, consonants}) => {
   // Calculate how many blank spaces we need to add after vowels to ensure consonants start on a new row
@@ -25,7 +26,7 @@ const AlphabetBoard = ({languageName, vowels, consonants}) => {
   const [resetCounter, setResetCounter] = useState(0);
   const totalLetters = alphabet.length - blankSpaces.length;
   const placedCount = placedLetters.size;
-  const progress = Math.round((placedCount / totalLetters) * 100);
+  const progressPercent = Math.round((placedCount / totalLetters) * 100);
 
   useEffect(() => {
     setupDraggableLetters();
@@ -33,10 +34,10 @@ const AlphabetBoard = ({languageName, vowels, consonants}) => {
 
   // Check for completion and trigger success animation
   useEffect(() => {
-    if (progress === 100 && !showSuccess) {
+    if (progressPercent === 100 && !showSuccess) {
       setShowSuccess(true);
     }
-  }, [progress, showSuccess]);
+  }, [progressPercent, showSuccess]);
 
   const setupDraggableLetters = () => {
     const letters = alphabet.map((letter, index) => ({
@@ -61,7 +62,7 @@ const AlphabetBoard = ({languageName, vowels, consonants}) => {
   }
 
   // Create a randomized array of draggable letters
-  const [draggableLetters, setDraggableLetters] = useState(setupDraggableLetters);
+  const [draggableLetters, setDraggableLetters] = useState(setupDraggableLetters());
 
   const COLS = 8;
   // Calculate required rows based on total letters
@@ -82,146 +83,215 @@ const AlphabetBoard = ({languageName, vowels, consonants}) => {
       layout.centered,
       showSuccess ? 'animate-[pulse_1s_ease-in-out]' : ''
     )}>
-      <div className={layout.container}>
-        <h2 className={typography.heading}>
+      <div className={combineClasses(layout.container, "px-1 md:px-8 pt-2 pb-4 md:py-8")}>
+        <h2 className={combineClasses(typography.heading, "text-lg md:text-3xl mb-1 md:mb-4")}>
           {languageName} Drag n Drop
         </h2>
-        <p className={typography.paragraph}>
-          Fill in the {languageName} letters matching their English sounds
+        <p className={combineClasses("text-[#F4C7C7] text-xs md:text-lg text-center mb-2 md:mb-8")}>
+          Match the {languageName} letters with their sounds
         </p>
 
         <DndProvider backend={HTML5Backend}>
-          {/* Main content area with side-by-side layout */}
-          <div className="flex flex-row justify-center gap-8 w-full px-4">
-            {/* Left side: Draggable Native Language Letters */}
-            <div className={combineClasses(layout.card, "w-1/2 max-w-xl")}>
-              <h3 className={typography.subheading}>{languageName} Letters</h3>
-              <div className="w-full">
-                {/* Vowels Section */}
-                <div className={typography.sectionLabel}>Vowels (ಸ್ವರಗಳು)</div>
-                <div className={combineClasses(grids.fiveColumns, 'mb-6')}>
-                  {draggableLetters
-                    .filter(letter => vowels.some(v => v.native === letter.letter))
-                    .map((letter) => {
-                      const isPlaced = placedLetters.has(letter.letter);
-                      return !isPlaced ? (
-                        <DraggableLetter
-                          key={letter.id}
-                          letter={letter.letter}
-                          id={letter.id}
-                        />
-                      ) : (
-                        <div key={letter.id} className="h-14 w-14" />
-                      );
-                    })}
+          <CustomDragLayer />
+          {/* Main content area with responsive layout */}
+          <div className="flex flex-col md:flex-row justify-center gap-1 md:gap-8 w-full">
+            {/* Mobile Game Container - Bento style layout */}
+            <div className="flex flex-col md:hidden w-full space-y-2">
+              {/* Compact Progress Bar for Mobile */}
+              <div className="px-1 mb-1">
+                <div className="h-1.5 bg-[#F4C7C7]/30 rounded-full overflow-hidden">
+                  <div 
+                    className={`h-full ${progressPercent === 100 ? 'bg-[#E34234] animate-pulse' : 'bg-[#E34234]'}`}
+                    style={{ width: `${progressPercent}%` }}
+                  ></div>
+                </div>
+                <div className="flex justify-between text-xs text-[#F4C7C7]/70 mt-0.5">
+                  <span>{placedCount}/{totalLetters}</span>
+                  <span>{progressPercent}%</span>
+                </div>
+              </div>
+
+              {/* Combined Minimalist Game Board */}
+              <div className="bg-[#F4C7C7]/10 backdrop-blur-sm rounded-lg p-2">
+                {/* Dropzones Grid - English Transliterations */}
+                <div className="grid grid-cols-6 gap-1 mb-3">
+                  {cells.filter(cell => cell !== null).map((cell, index) => {
+                    const letterObj = alphabet.find(a => a.english === cell);
+                    const nativeLetter = letterObj ? letterObj.native : null;
+                    return (
+                      <DropZone
+                        key={`drop-${index}`}
+                        expectedNative={nativeLetter}
+                        englishTransliteration={cell}
+                        reset={resetCounter}
+                        onDrop={(item) => {
+                          if (item.letter === nativeLetter) {
+                            setPlacedLetters(prev => new Set([...prev, item.letter]));
+                          }
+                        }}
+                      />
+                    );
+                  })}
                 </div>
 
-                {/* Separator Line */}
-                <div className={separator.default}></div>
-
-                {/* Consonants Section */}
-                <div className={typography.sectionLabel}>Consonants (ವ್ಯಂಜನಗಳು)</div>
-                <div className={grids.fiveColumns}>
+                {/* Draggable Letters Grid */}
+                <div className="grid grid-cols-6 gap-1">
                   {draggableLetters
-                    .filter(letter => consonants.some(c => c.native === letter.letter))
+                    .filter(letter => letter.letter !== null)
                     .map((letter) => {
                       const isPlaced = placedLetters.has(letter.letter);
                       return !isPlaced ? (
                         <DraggableLetter
-                          key={letter.id}
+                          key={`drag-${letter.id}`}
                           letter={letter.letter}
                           id={letter.id}
                         />
                       ) : (
-                        <div key={letter.id} className="h-14 w-14" />
+                        <div key={`empty-${letter.id}`} className="h-9 w-9 sm:h-10 sm:w-10" />
                       );
                     })}
                 </div>
               </div>
+
+              {/* Reset Button for mobile */}
+              <button
+                onClick={handleReset}
+                className="bg-transparent text-[#F4C7C7] text-xs font-medium py-1 px-3 rounded-full hover:bg-[#E34234]/20 transition-colors self-center"
+              >
+                Reset
+              </button>
             </div>
 
-            {/* Right side: Drop Zones */}
-            <div className={combineClasses(layout.card, "w-1/2 max-w-xl")}>
-              <h3 className={typography.subheading}>English Transliterations</h3>
-              <div className="w-full">
-                {/* Section Label for Vowels */}
-                <div className={typography.sectionLabel}>Vowels (ಸ್ವರಗಳು)</div>
-                <div className={grids.fiveColumns}>
+            {/* Desktop Layout - Side by side */}
+            <div className="hidden md:flex md:flex-row justify-center gap-8 w-full">
+              {/* Left side: Draggable Native Language Letters */}
+              <div className={combineClasses(layout.card, "w-1/2 max-w-xl p-8")}>
+                <h3 className={typography.subheading}>{languageName} Letters</h3>
+                <div className="w-full">
                   {/* Vowels Section */}
-                  {cells.slice(0, vowels.length).map((cell, index) => {
-                    const nativeLetter = index < vowels.length ? vowels[index].native : null;
-                    return (
-                      <DropZone
-                        key={index}
-                        expectedNative={nativeLetter}
-                        englishTransliteration={cell}
-                        reset={resetCounter}
-                        onDrop={(item) => {
-                          if (item.letter === nativeLetter) {
-                            setPlacedLetters(prev => new Set([...prev, item.letter]));
-                          }
-                        }}
-                      />
-                    );
-                  })}
-                </div>
+                  <div className={typography.sectionLabel}>Vowels (ಸ್ವರಗಳು)</div>
+                  <div className="grid grid-cols-5 gap-4 mb-6">
+                    {draggableLetters
+                      .filter(letter => vowels.some(v => v.native === letter.letter))
+                      .map((letter) => {
+                        const isPlaced = placedLetters.has(letter.letter);
+                        return !isPlaced ? (
+                          <DraggableLetter
+                            key={letter.id}
+                            letter={letter.letter}
+                            id={letter.id}
+                          />
+                        ) : (
+                          <div key={letter.id} className="h-12 w-12" />
+                        );
+                      })}
+                  </div>
 
-                {/* Separator Line */}
-                <div className={separator.default}></div>
+                  {/* Separator Line */}
+                  <div className="border-b-2 border-[#E34234]/20 my-6"></div>
 
-                {/* Section Label for Consonants */}
-                <div className={typography.sectionLabel}>Consonants (ವ್ಯಂಜನಗಳು)</div>
-                <div className={grids.fiveColumns}>
                   {/* Consonants Section */}
-                  {cells.slice(vowels.length + blankSpacesNeeded).map((cell, index) => {
-                    const consonantIndex = index + vowels.length + blankSpacesNeeded;
-                    const nativeLetter = consonantIndex < alphabet.length ? alphabet[consonantIndex].native : null;
-                    return (
-                      <DropZone
-                        key={consonantIndex}
-                        expectedNative={nativeLetter}
-                        englishTransliteration={cell}
-                        reset={resetCounter}
-                        onDrop={(item) => {
-                          if (item.letter === nativeLetter) {
-                            setPlacedLetters(prev => new Set([...prev, item.letter]));
-                          }
-                        }}
-                      />
-                    );
-                  })}
+                  <div className={typography.sectionLabel}>Consonants (ವ್ಯಂಜನಗಳು)</div>
+                  <div className="grid grid-cols-5 gap-4">
+                    {draggableLetters
+                      .filter(letter => consonants.some(c => c.native === letter.letter))
+                      .map((letter) => {
+                        const isPlaced = placedLetters.has(letter.letter);
+                        return !isPlaced ? (
+                          <DraggableLetter
+                            key={letter.id}
+                            letter={letter.letter}
+                            id={letter.id}
+                          />
+                        ) : (
+                          <div key={letter.id} className="h-12 w-12" />
+                        );
+                      })}
+                  </div>
+                </div>
+              </div>
+
+              {/* Right side: Drop Zones */}
+              <div className={combineClasses(layout.card, "w-1/2 max-w-xl p-8")}>
+                <h3 className={typography.subheading}>English Transliterations</h3>
+                <div className="w-full">
+                  {/* Section Label for Vowels */}
+                  <div className={typography.sectionLabel}>Vowels (ಸ್ವರಗಳು)</div>
+                  <div className="grid grid-cols-5 gap-4">
+                    {/* Vowels Section */}
+                    {cells.slice(0, vowels.length).map((cell, index) => {
+                      const nativeLetter = index < vowels.length ? vowels[index].native : null;
+                      return (
+                        <DropZone
+                          key={index}
+                          expectedNative={nativeLetter}
+                          englishTransliteration={cell}
+                          reset={resetCounter}
+                          onDrop={(item) => {
+                            if (item.letter === nativeLetter) {
+                              setPlacedLetters(prev => new Set([...prev, item.letter]));
+                            }
+                          }}
+                        />
+                      );
+                    })}
+                  </div>
+
+                  {/* Separator Line */}
+                  <div className="border-b-2 border-[#E34234]/20 my-6"></div>
+
+                  {/* Section Label for Consonants */}
+                  <div className={typography.sectionLabel}>Consonants (ವ್ಯಂಜನಗಳು)</div>
+                  <div className="grid grid-cols-5 gap-4">
+                    {/* Consonants Section */}
+                    {cells.slice(vowels.length + blankSpacesNeeded).map((cell, index) => {
+                      const consonantIndex = index + vowels.length + blankSpacesNeeded;
+                      const nativeLetter = consonantIndex < alphabet.length ? alphabet[consonantIndex].native : null;
+                      return (
+                        <DropZone
+                          key={consonantIndex}
+                          expectedNative={nativeLetter}
+                          englishTransliteration={cell}
+                          reset={resetCounter}
+                          onDrop={(item) => {
+                            if (item.letter === nativeLetter) {
+                              setPlacedLetters(prev => new Set([...prev, item.letter]));
+                            }
+                          }}
+                        />
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </DndProvider>
 
-        <div className="mt-8 text-center space-y-4 w-full max-w-4xl">
+        {/* Desktop Progress and Reset Button Area */}
+        <div className="hidden md:block mt-8 text-center space-y-4 w-full max-w-4xl px-4">
           {/* Progress Bar */}
           <div className={progress.container}>
             <div
-              className={combineClasses(
-                progress.bar,
-                progress === 100 ? progress.complete : ''
-              )}
-              style={{ width: `${progress}%` }}
-            />
+              className={progress.bar + (progressPercent === 100 ? ' ' + progress.complete : '')}
+              style={{ width: `${progressPercent}%` }}
+            ></div>
           </div>
-          <div className="flex flex-col items-center gap-4">
-            {progress === 100 ? (
-              <span className={combineClasses(colors.lightText, 'font-bold animate-[bounce_1s_ease-in-out_infinite]')}>
-                All letters placed correctly! Great job! 🎉
-              </span>
-            ) : (
-              <span className={colors.lightText}>
-                {placedCount} out of {totalLetters} letters placed correctly
-              </span>
-            )}
+          <div className="flex justify-between text-xs text-[#F4C7C7]">
+            <span>Progress</span>
+            <span>{progressPercent}%</span>
+          </div>
+
+          {/* Reset Button */}
+          <div className="pt-4">
             <button
               onClick={handleReset}
-              className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+              className={combineClasses(
+                "bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors",
+                "px-6 py-2 mx-auto"
+              )}
             >
-              Reset state
+              Reset Game
             </button>
           </div>
         </div>

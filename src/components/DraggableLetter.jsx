@@ -24,8 +24,8 @@ const DraggableLetter = ({ letter, id }) => {
     }));
 
     const dragPreviewStyle = {
-        transform: isDragging ? 'rotate(-5deg)' : 'rotate(0)',
-        transition: 'transform 0.2s ease-in-out',
+        transform: isDragging ? 'rotate(-5deg) scale(1.1)' : 'rotate(0)',
+        transition: 'transform 0.15s ease-in-out',
     };
 
     return (
@@ -33,16 +33,14 @@ const DraggableLetter = ({ letter, id }) => {
             ref={drag}
             style={dragPreviewStyle}
             className={combineClasses(
-                'w-14 h-14 flex items-center justify-center',
-                colors.light,
-                'border-2 border-[#E34234]',
-                'text-3xl font-bold',
-                colors.secondaryText,
-                'rounded-lg cursor-move',
+                'w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center',
+                isDragging ? 'bg-[#E34234]/90' : 'bg-[#F4C7C7]',
+                'text-lg sm:text-xl md:text-2xl font-bold',
+                isDragging ? 'text-white' : colors.secondaryText,
+                'rounded-md cursor-move',
                 interactive.transition,
-                'select-none',
-                'hover:bg-[#f0baba] hover:border-[#c93a2e] hover:shadow-md',
-                isDragging ? 'opacity-90 scale-110 ring-2 ring-[#E34234] shadow-lg z-50' : 'hover:scale-105'
+                'select-none shadow-sm',
+                isDragging ? 'shadow-md z-50' : 'hover:bg-[#F4C7C7]/80 hover:text-[#E34234] hover:shadow'
             )}
         >
             {letter}
