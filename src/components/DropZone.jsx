@@ -32,9 +32,9 @@ const DropZone = ({ expectedNative, englishTransliteration, onDrop, reset }) => 
     const getDropZoneStyle = () => {
         if (!expectedNative) return 'bg-transparent';
         if (droppedLetter) return 'bg-[#E34234] shadow-sm animate-[pulse_1.5s_ease-in-out_1]';
-        if (isOver && canDrop) return 'bg-[#F4C7C7]/80 shadow-sm';
+        if (isOver && canDrop) return 'bg-[#F4C7C7] shadow-sm';
         if (isOver && !canDrop) return 'bg-[#F4C7C7]/40';
-        return 'bg-[#F4C7C7]/30 hover:bg-[#F4C7C7]/50';
+        return 'bg-[#F4C7C7] hover:bg-[#F4C7C7]/80';
     };
     
     return (
