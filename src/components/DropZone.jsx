@@ -1,9 +1,16 @@
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import {useDrop} from "react-dnd";
 import { colors, interactive, combineClasses } from '../styles/styles';
 
-const DropZone = ({ expectedNative, englishTransliteration, onDrop }) => {
+const DropZone = ({ expectedNative, englishTransliteration, onDrop, reset }) => {
     const [droppedLetter, setDroppedLetter] = useState(null);
+
+    // Reset the dropped letter when reset prop changes
+    useEffect(() => {
+        if (reset) {
+            setDroppedLetter(null);
+        }
+    }, [reset]);
     const [{ isOver, canDrop }, drop] = useDrop(() => ({
         accept: "LETTER",
         canDrop: (item) => item.letter === expectedNative,

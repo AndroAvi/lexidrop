@@ -22,6 +22,7 @@ const AlphabetBoard = ({languageName, vowels, consonants}) => {
   // Track letters that have been correctly placed in their slots
   const [placedLetters, setPlacedLetters] = useState(new Set());
   const [showSuccess, setShowSuccess] = useState(false);
+  const [resetCounter, setResetCounter] = useState(0);
   const totalLetters = alphabet.length - blankSpaces.length;
   const placedCount = placedLetters.size;
   const progress = Math.round((placedCount / totalLetters) * 100);
@@ -50,6 +51,13 @@ const AlphabetBoard = ({languageName, vowels, consonants}) => {
     }
 
     return letters;
+  }
+
+  const handleReset = () => {
+    setPlacedLetters(new Set());
+    setDraggableLetters(setupDraggableLetters());
+    setShowSuccess(false);
+    setResetCounter(prev => prev + 1);
   }
 
   // Create a randomized array of draggable letters
@@ -147,6 +155,7 @@ const AlphabetBoard = ({languageName, vowels, consonants}) => {
                         key={index}
                         expectedNative={nativeLetter}
                         englishTransliteration={cell}
+                        reset={resetCounter}
                         onDrop={(item) => {
                           if (item.letter === nativeLetter) {
                             setPlacedLetters(prev => new Set([...prev, item.letter]));
@@ -172,6 +181,7 @@ const AlphabetBoard = ({languageName, vowels, consonants}) => {
                         key={consonantIndex}
                         expectedNative={nativeLetter}
                         englishTransliteration={cell}
+                        reset={resetCounter}
                         onDrop={(item) => {
                           if (item.letter === nativeLetter) {
                             setPlacedLetters(prev => new Set([...prev, item.letter]));
@@ -197,16 +207,22 @@ const AlphabetBoard = ({languageName, vowels, consonants}) => {
               style={{ width: `${progress}%` }}
             />
           </div>
-          <div className={colors.lightText}>
+          <div className="flex flex-col items-center gap-4">
             {progress === 100 ? (
               <span className={combineClasses(colors.lightText, 'font-bold animate-[bounce_1s_ease-in-out_infinite]')}>
                 All letters placed correctly! Great job! 🎉
               </span>
             ) : (
-              <span>
-                {placedCount} of {totalLetters} letters placed correctly
+              <span className={colors.lightText}>
+                {placedCount} out of {totalLetters} letters placed correctly
               </span>
             )}
+            <button
+              onClick={handleReset}
+              className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+            >
+              Reset state
+            </button>
           </div>
         </div>
       </div>
