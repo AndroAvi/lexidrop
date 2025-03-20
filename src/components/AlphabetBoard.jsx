@@ -26,6 +26,10 @@ const AlphabetBoard = ({languageName, vowels, consonants}) => {
   const placedCount = placedLetters.size;
   const progress = Math.round((placedCount / totalLetters) * 100);
 
+  useEffect(() => {
+    setupDraggableLetters();
+  }, []);
+
   // Check for completion and trigger success animation
   useEffect(() => {
     if (progress === 100 && !showSuccess) {
@@ -33,8 +37,7 @@ const AlphabetBoard = ({languageName, vowels, consonants}) => {
     }
   }, [progress, showSuccess]);
 
-  // Create a randomized array of draggable letters
-  const [randomizedLetters] = useState(() => {
+  const setupDraggableLetters = () => {
     const letters = alphabet.map((letter, index) => ({
       id: index + 1,
       letter: letter.native
@@ -47,7 +50,10 @@ const AlphabetBoard = ({languageName, vowels, consonants}) => {
     }
 
     return letters;
-  });
+  }
+
+  // Create a randomized array of draggable letters
+  const [draggableLetters, setDraggableLetters] = useState(setupDraggableLetters);
 
   const COLS = 8;
   // Calculate required rows based on total letters
@@ -86,7 +92,7 @@ const AlphabetBoard = ({languageName, vowels, consonants}) => {
                 {/* Vowels Section */}
                 <div className={typography.sectionLabel}>Vowels (ಸ್ವರಗಳು)</div>
                 <div className={combineClasses(grids.fiveColumns, 'mb-6')}>
-                  {randomizedLetters
+                  {draggableLetters
                     .filter(letter => vowels.some(v => v.native === letter.letter))
                     .map((letter) => {
                       const isPlaced = placedLetters.has(letter.letter);
@@ -108,7 +114,7 @@ const AlphabetBoard = ({languageName, vowels, consonants}) => {
                 {/* Consonants Section */}
                 <div className={typography.sectionLabel}>Consonants (ವ್ಯಂಜನಗಳು)</div>
                 <div className={grids.fiveColumns}>
-                  {randomizedLetters
+                  {draggableLetters
                     .filter(letter => consonants.some(c => c.native === letter.letter))
                     .map((letter) => {
                       const isPlaced = placedLetters.has(letter.letter);
