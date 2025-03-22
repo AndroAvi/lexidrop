@@ -10,7 +10,7 @@ const SelectionScreen = ({languages, handleLanguageSelect}) => {
                 <div className={combineClasses(layout.card, "max-w-xl")}>
                     <h3 className={typography.subheading}>Available Languages</h3>
                     <div className={grids.twoColumns}>
-                        {languages.map((language) => (
+                        {languages.sort().map((language) => (
                             <button 
                                 key={language} 
                                 onClick={() => handleLanguageSelect(language)}
