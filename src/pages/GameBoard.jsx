@@ -6,7 +6,7 @@ const GameBoard = () => {
     const { languageNames, selectedLanguageData, selectLanguage } = useLanguages();
 
     if (selectedLanguageData) {
-        return <AlphabetBoard {...selectedLanguageData} />;
+        return <AlphabetBoard {...selectedLanguageData} onBack={() => selectLanguage(null)} />;
     }
 
     return (
