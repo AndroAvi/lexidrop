@@ -2,7 +2,7 @@ import React from 'react';
 
 const TitlePage = ({ onStartGame }) => {
   return (
-    <div className="fixed inset-0 w-screen h-screen overflow-hidden bg-[#DB5375] text-[#F4C7C7]">
+    <div className="inset-0 w-screen h-screen overflow-hidden bg-[#DB5375] text-[#F4C7C7]">
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="max-w-4xl w-full text-center space-y-8 px-4">
         <h1 className="text-6xl font-bold mb-4 animate-fade-in">
