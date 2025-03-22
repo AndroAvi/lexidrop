@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {languageNames, getLanguageData} from '../constants/languages';
+import {languageNames, getLanguageData} from '../constants/languages/index.js';
 
 export const useLanguages = () => {
     const [selectedLanguageData, setSelectedLanguageData] = useState(null);

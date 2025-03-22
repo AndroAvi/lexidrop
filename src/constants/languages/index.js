@@ -1,4 +1,4 @@
-const modules = import.meta.glob('./*.jsx', { eager: true });
+const modules = import.meta.glob('./*.js', { eager: true });
 
 const languages = {};
 Object.entries(modules).forEach(([path, module]) => {
