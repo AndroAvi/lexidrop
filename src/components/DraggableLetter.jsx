@@ -1,7 +1,7 @@
 import {useDrag} from "react-dnd";
 import { colors, interactive, combineClasses } from '../styles/styles';
 
-const DraggableLetter = ({ letter, id }) => {
+const DraggableLetter = ({ letter, id, progress, setProgress }) => {
     const [{ isDragging }, drag] = useDrag(() => ({
         type: "LETTER",
         item: { id, letter },
@@ -23,6 +23,12 @@ const DraggableLetter = ({ letter, id }) => {
         },
     }));
 
+    const handleInteraction = () => {
+        if (progress === "stopped") {
+            setProgress("started");
+        }
+    };
+
     const dragPreviewStyle = {
         transform: isDragging ? 'rotate(-5deg) scale(1.1)' : 'rotate(0)',
         transition: 'transform 0.15s ease-in-out',
@@ -32,6 +38,8 @@ const DraggableLetter = ({ letter, id }) => {
         <div
             ref={drag}
             style={dragPreviewStyle}
+            onMouseDown={handleInteraction}
+            onTouchStart={handleInteraction}
             className={combineClasses(
                 'w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center',
                 isDragging ? 'bg-[#E34234]/90' : 'bg-[#F4C7C7]',

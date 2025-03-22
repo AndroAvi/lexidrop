@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import DraggableLetter from './DraggableLetter';
@@ -26,6 +26,9 @@ const AlphabetBoard = ({languageName, vowels, consonants, onBack}) => {
   const [placedLetters, setPlacedLetters] = useState(new Set());
   const [showSuccess, setShowSuccess] = useState(false);
   const [resetCounter, setResetCounter] = useState(0);
+  const [progress, setProgress] = useState("stopped");
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const timerRef = useRef(null);
   const totalLetters = alphabet.length - blankSpaces.length;
   const placedCount = placedLetters.size;
   const progressPercent = Math.round((placedCount / totalLetters) * 100);
@@ -34,10 +37,28 @@ const AlphabetBoard = ({languageName, vowels, consonants, onBack}) => {
     setupDraggableLetters();
   }, []);
 
+  useEffect(() => {
+    if (progress === "started" && !timerRef.current) {
+      timerRef.current = setInterval(() => {
+        setElapsedTime(prev => prev + 1);
+      }, 1000);
+    } else if (progress !== "started" && timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, [progress]);
+
   // Check for completion and trigger success animation
   useEffect(() => {
     if (progressPercent === 100 && !showSuccess) {
       setShowSuccess(true);
+      setProgress("finished");
     }
   }, [progressPercent, showSuccess]);
 
@@ -61,6 +82,8 @@ const AlphabetBoard = ({languageName, vowels, consonants, onBack}) => {
     setDraggableLetters(setupDraggableLetters());
     setShowSuccess(false);
     setResetCounter(prev => prev + 1);
+    setProgress("stopped");
+    setElapsedTime(0);
   }
 
   // Create a randomized array of draggable letters
@@ -99,6 +122,18 @@ const AlphabetBoard = ({languageName, vowels, consonants, onBack}) => {
           <p className={combineClasses("text-[#F4C7C7] text-xs md:text-lg text-center mb-2 md:mb-8")}>
             Match the {languageName} letters with their sounds
           </p>
+
+          {/* Timer Display */}
+          <div className="w-full max-w-xs mx-auto mb-4 bg-[#F4C7C7]/10 backdrop-blur-sm rounded-lg p-3">
+            <div className="flex justify-between items-center">
+              <div className="text-[#F4C7C7] text-2xl font-bold">
+                {Math.floor(elapsedTime / 60)}:{(elapsedTime % 60).toString().padStart(2, '0')}
+              </div>
+              <div className="text-[#F4C7C7] text-lg">
+                {placedCount}/{totalLetters} letters
+              </div>
+            </div>
+          </div>
 
           <DndProvider backend={MultiBackend} options={HTML5toTouch}>
             <CustomDragLayer />
@@ -154,6 +189,8 @@ const AlphabetBoard = ({languageName, vowels, consonants, onBack}) => {
                             key={`drag-${letter.id}`}
                             letter={letter.letter}
                             id={letter.id}
+                            progress={progress}
+                            setProgress={setProgress}
                           />
                         ) : (
                           <div key={`empty-${letter.id}`} className="h-9 w-9 sm:h-10 sm:w-10" />
@@ -175,7 +212,10 @@ const AlphabetBoard = ({languageName, vowels, consonants, onBack}) => {
               <div className="hidden md:flex md:flex-row justify-center gap-8 w-full">
                 {/* Left side: Draggable Native Language Letters */}
                 <div className={combineClasses(layout.card, "w-1/2 max-w-xl p-8")}>
-                  <h3 className={typography.subheading}>{languageName} Letters</h3>
+                  <div className="flex justify-between items-center mb-6">
+                    <h3 className={typography.subheading}>{languageName} Letters</h3>
+                  </div>
+
                   <div className="w-full">
                     {/* Vowels Section */}
                     <div className={typography.sectionLabel}>Vowels (ಸ್ವರಗಳು)</div>
@@ -189,6 +229,8 @@ const AlphabetBoard = ({languageName, vowels, consonants, onBack}) => {
                               key={letter.id}
                               letter={letter.letter}
                               id={letter.id}
+                              progress={progress}
+                              setProgress={setProgress}
                             />
                           ) : (
                             <div key={letter.id} className="h-12 w-12" />
@@ -211,6 +253,8 @@ const AlphabetBoard = ({languageName, vowels, consonants, onBack}) => {
                               key={letter.id}
                               letter={letter.letter}
                               id={letter.id}
+                              progress={progress}
+                              setProgress={setProgress}
                             />
                           ) : (
                             <div key={letter.id} className="h-12 w-12" />
@@ -279,25 +323,13 @@ const AlphabetBoard = ({languageName, vowels, consonants, onBack}) => {
 
           {/* Desktop Progress and Reset Button Area */}
           <div className="hidden md:block mt-8 text-center space-y-4 w-full max-w-4xl px-4">
-            {/* Progress Bar */}
-            <div className={progress.container}>
-              <div
-                className={progress.bar + (progressPercent === 100 ? ' ' + progress.complete : '')}
-                style={{ width: `${progressPercent}%` }}
-              ></div>
-            </div>
-            <div className="flex justify-between text-xs text-[#F4C7C7]">
-              <span>Progress</span>
-              <span>{progressPercent}%</span>
-            </div>
-
             {/* Reset Button */}
             <div className="pt-4">
               <button
                 onClick={handleReset}
                 className={combineClasses(
-                  "bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors",
-                  "px-6 py-2 mx-auto"
+                  "bg-transparent text-[#F4C7C7] text-base font-medium",
+                  "px-6 py-2 mx-auto rounded-full hover:bg-[#E34234]/20 transition-colors"
                 )}
               >
                 Reset Game
