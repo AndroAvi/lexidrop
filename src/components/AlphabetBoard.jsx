@@ -5,7 +5,8 @@ import DraggableLetter from './DraggableLetter';
 import DropZone from './DropZone';
 import CustomDragLayer from './CustomDragLayer';
 import { colors, layout, typography, progress, combineClasses } from '../styles/styles';
-import {TouchBackend} from "react-dnd-touch-backend";
+import { MultiBackend } from 'react-dnd-multi-backend'
+import { HTML5toTouch } from 'rdndmb-html5-to-touch'
 
 const AlphabetBoard = ({languageName, vowels, consonants}) => {
   // Calculate how many blank spaces we need to add after vowels to ensure consonants start on a new row
@@ -77,10 +78,6 @@ const AlphabetBoard = ({languageName, vowels, consonants}) => {
     return null;
   });
 
-  const isTouchDevice = () => {
-    return window.matchMedia("(pointer: coarse)").matches
-  };
-
   return (
     <div className={combineClasses(
       layout.fullScreen,
@@ -96,7 +93,7 @@ const AlphabetBoard = ({languageName, vowels, consonants}) => {
           Match the {languageName} letters with their sounds
         </p>
 
-        <DndProvider backend={isTouchDevice() ? TouchBackend : HTML5Backend}>
+        <DndProvider backend={MultiBackend} options={HTML5toTouch}>
           <CustomDragLayer />
           {/* Main content area with responsive layout */}
           <div className="flex flex-col md:flex-row justify-center gap-1 md:gap-8 w-full">
