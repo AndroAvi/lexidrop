@@ -22,14 +22,17 @@ const AlphabetBoard = ({languageName, vowels, consonants, onBack}) => {
   // Combine vowels, blank spaces, and consonants
   const alphabet = [...vowels, ...blankSpaces, ...consonants];
 
+  // Calculate total valid letters (excluding null/blank spaces)
+  const totalLetters = alphabet.filter(letter => letter.native !== null).length;
+
   // Track letters that have been correctly placed in their slots
   const [placedLetters, setPlacedLetters] = useState(new Set());
+  const [autoPlacedLetters, setAutoPlacedLetters] = useState(new Set());
   const [showSuccess, setShowSuccess] = useState(false);
   const [resetCounter, setResetCounter] = useState(0);
   const [progress, setProgress] = useState("stopped");
   const [elapsedTime, setElapsedTime] = useState(0);
   const timerRef = useRef(null);
-  const totalLetters = alphabet.length - blankSpaces.length;
   const placedCount = placedLetters.size;
   const progressPercent = Math.round((placedCount / totalLetters) * 100);
 
@@ -68,23 +71,36 @@ const AlphabetBoard = ({languageName, vowels, consonants, onBack}) => {
       letter: letter.native
     }));
 
-    // Fisher-Yates shuffle algorithm
-    for (let i = letters.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [letters[i], letters[j]] = [letters[j], letters[i]];
-    }
+    // // Fisher-Yates shuffle algorithm
+    // for (let i = letters.length - 1; i > 0; i--) {
+    //   const j = Math.floor(Math.random() * (i + 1));
+    //   [letters[i], letters[j]] = [letters[j], letters[i]];
+    // }
 
     return letters;
   }
 
   const handleReset = () => {
     setPlacedLetters(new Set());
+    setAutoPlacedLetters(new Set());
     setDraggableLetters(setupDraggableLetters());
     setShowSuccess(false);
     setResetCounter(prev => prev + 1);
     setProgress("stopped");
     setElapsedTime(0);
   }
+
+  const handleAutoPlace = () => {
+    // Get all valid letters that haven't been placed yet
+    const validLetters = alphabet
+      .filter(letter => letter.native !== null)
+      .map(letter => letter.native);
+    
+    // Create a new Set with all valid letters
+    setPlacedLetters(new Set(validLetters));
+    setAutoPlacedLetters(new Set(validLetters));
+    setProgress("finished");
+  };
 
   // Create a randomized array of draggable letters
   const [draggableLetters, setDraggableLetters] = useState(setupDraggableLetters());
@@ -110,12 +126,26 @@ const AlphabetBoard = ({languageName, vowels, consonants, onBack}) => {
     )}>
       <div className={combineClasses(layout.container, "px-1 md:px-8 pt-2 pb-4 md:py-8")}>
         <div className="flex flex-col w-full max-w-4xl mx-auto">
-          <button
-            onClick={onBack}
-            className="text-[#F4C7C7] text-sm md:text-base hover:bg-[#E34234]/20 py-1 px-3 rounded-full transition-colors self-start mb-2 md:mb-4"
-          >
-            ← Back
-          </button>
+          <div className="flex justify-between items-center">
+            <button
+              onClick={onBack}
+              className="text-[#F4C7C7] text-sm md:text-base hover:bg-[#E34234]/20 py-1 px-3 rounded-full transition-colors self-start mb-2 md:mb-4"
+            >
+              ← Back
+            </button>
+            <button
+              onClick={handleReset}
+              className="text-[#F4C7C7] text-sm md:text-base hover:bg-[#E34234]/20 py-1 px-3 rounded-full transition-colors self-start mb-2 md:mb-4"
+            >
+              Reset Board
+            </button>
+            <button
+              onClick={handleAutoPlace}
+              className="text-[#F4C7C7] text-sm md:text-base hover:bg-[#E34234]/20 py-1 px-3 rounded-full transition-colors self-start mb-2 md:mb-4"
+            >
+              Auto-place
+            </button>
+          </div>
           <h2 className={combineClasses(typography.heading, "text-lg md:text-3xl text-center mb-1 md:mb-4")}>
             {languageName} Drag n Drop
           </h2>
@@ -173,6 +203,7 @@ const AlphabetBoard = ({languageName, vowels, consonants, onBack}) => {
                               setPlacedLetters(prev => new Set([...prev, item.letter]));
                             }
                           }}
+                          isAutoPlaced={autoPlacedLetters.has(nativeLetter)}
                         />
                       );
                     })}
@@ -285,6 +316,7 @@ const AlphabetBoard = ({languageName, vowels, consonants, onBack}) => {
                                 setPlacedLetters(prev => new Set([...prev, item.letter]));
                               }
                             }}
+                            isAutoPlaced={autoPlacedLetters.has(nativeLetter)}
                           />
                         );
                       })}
@@ -311,6 +343,7 @@ const AlphabetBoard = ({languageName, vowels, consonants, onBack}) => {
                                 setPlacedLetters(prev => new Set([...prev, item.letter]));
                               }
                             }}
+                            isAutoPlaced={autoPlacedLetters.has(nativeLetter)}
                           />
                         );
                       })}
@@ -320,22 +353,6 @@ const AlphabetBoard = ({languageName, vowels, consonants, onBack}) => {
               </div>
             </div>
           </DndProvider>
-
-          {/* Desktop Progress and Reset Button Area */}
-          <div className="hidden md:block mt-8 text-center space-y-4 w-full max-w-4xl px-4">
-            {/* Reset Button */}
-            <div className="pt-4">
-              <button
-                onClick={handleReset}
-                className={combineClasses(
-                  "bg-transparent text-[#F4C7C7] text-base font-medium",
-                  "px-6 py-2 mx-auto rounded-full hover:bg-[#E34234]/20 transition-colors"
-                )}
-              >
-                Reset Game
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     </div>
