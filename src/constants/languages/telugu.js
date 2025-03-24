@@ -10,8 +10,9 @@ const vowels = [
     { native: 'ఐ', english: 'ai' },
     { native: 'ఒ', english: 'ō' },
     { native: 'ఔ', english: 'au' },
-    { native: 'ం', english: 'aṃ' },
-    { native: 'ః', english: 'aḥ' },
+    { native: 'అం', english: 'aṃ' },
+    { native: 'అఁ', english: 'aṅ' },
+    { native: 'అః', english: 'aḥ' },
 ]
 
 const consonants = [
